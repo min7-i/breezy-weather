@@ -19,8 +19,10 @@ package org.breezyweather.common.basic
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import org.breezyweather.BreezyWeather
 import org.breezyweather.common.basic.insets.FitHorizontalSystemBarRootLayout

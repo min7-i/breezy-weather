@@ -38,6 +38,7 @@ import androidx.annotation.Px
 import androidx.annotation.Size
 import androidx.annotation.StyleRes
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.ViewCompat
 import com.google.android.material.resources.TextAppearance
 import kotlin.math.min
 
@@ -110,50 +111,26 @@ fun Window.setSystemBarStyle(
     var lightStatus = lightStatusP
     var navigationShader = navigationShaderP
     var lightNavigation = lightNavigationP
-    var visibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
 
-    // status bar.
-    if (lightStatus) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            visibility = visibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } else {
-            lightStatus = false
-            statusShader = true
-        }
-    }
-
-    // navigation bar.
-    if (lightNavigation) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            visibility = visibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        } else {
-            lightNavigation = false
-            navigationShader = true
-        }
-    }
-    navigationShader = navigationShader and (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-
-    // flags.
-    this.decorView.systemUiVisibility = visibility
-
+    // TODO: remove paragraphs to make bars transparent
     // colors.
-    if (!statusShader) {
-        this.statusBarColor = Color.TRANSPARENT
-    } else {
+    ViewCompat.WindowInsetsControllerCompat(view)?.isAppearanceLightStatusBars = darkTheme
+    if (statusShader) {
         this.statusBarColor = ColorUtils.setAlphaComponent(
             if (lightStatus) Color.WHITE else Color.BLACK,
             ((if (lightStatus) 0.5 else 0.2) * 255).toInt()
         )
-    }
-    if (!navigationShader) {
-        this.navigationBarColor = Color.TRANSPARENT
     } else {
+        this.statusBarColor = Color.TRANSPARENT
+    }
+
+    if (navigationShader) {
         this.navigationBarColor = ColorUtils.setAlphaComponent(
             if (lightNavigation) Color.WHITE else Color.BLACK,
             ((if (lightNavigation) 0.5 else 0.2) * 255).toInt()
         )
+    } else {
+        this.navigationBarColor = Color.TRANSPARENT
     }
 }
 

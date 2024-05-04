@@ -17,10 +17,12 @@
 package org.breezyweather.search
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +35,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
@@ -53,6 +59,7 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -108,12 +115,15 @@ class SearchActivity : GeoActivity() {
         val locationSearchSource = sourceManager.getLocationSearchSourceOrDefault(locationSearchSourceState.value)
 
         Material3Scaffold(
-            modifier = Modifier.imePadding(),
+            modifier = Modifier
+                .imePadding(),
             bottomBar = {
                 BottomAppBar(
                     actions = {
                         Box(
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp).weight(100f)
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp)
+                                .weight(100f)
                         ) {
                             Column {
                                 Text(
@@ -139,7 +149,7 @@ class SearchActivity : GeoActivity() {
                         }
                     } else null
                 )
-            }
+            },
         ) { paddings ->
             Surface(
                 //shape = shape,
@@ -149,7 +159,8 @@ class SearchActivity : GeoActivity() {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(paddings)
+                    modifier = Modifier
+                        .padding(paddings)
                 ) {
                     Material3SearchBarInputField(
                         query = text,
@@ -175,7 +186,9 @@ class SearchActivity : GeoActivity() {
                     }
                     if (listResourceState.value.first.isNotEmpty()) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(listResourceState.value.first) { location ->

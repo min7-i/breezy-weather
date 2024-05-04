@@ -27,6 +27,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.Lifecycle
@@ -35,6 +37,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import breezyweather.domain.location.model.Location
+import dalvik.system.ZipPathValidator.setCallback
 import kotlinx.coroutines.launch
 import org.breezyweather.R
 import org.breezyweather.common.basic.livedata.EqualtableLiveData
@@ -86,6 +89,19 @@ class HomeFragment : MainModuleFragment() {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
 
         initModel()
+
+        /*requireActivity().enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(
+                Color.BLUE
+            ),
+            navigationBarStyle = SystemBarStyle.dark(Color.YELLOW)
+        )*/
+        /*
+        statusShader = scrollListener?.topOverlap == true,
+        lightStatus = false,
+        navigationShader = true,
+        lightNavigation = false
+         */
 
         // attach weather view.
         weatherView = ThemeManager

@@ -157,7 +157,7 @@ class AlertActivity : GeoActivity() {
         val isLightTheme = MainThemeColorProvider.isLightTheme(context, location.value)
         BreezyWeatherTheme(lightTheme = isLightTheme) {
             // re-setting the status bar color once the location is fetched above in the launched effect
-            ThemeManager
+            /*ThemeManager
                 .getInstance(this)
                 .weatherThemeDelegate
                 .setSystemBarStyle(
@@ -168,6 +168,7 @@ class AlertActivity : GeoActivity() {
                     navigationShader = true,
                     lightNavigation = false
                 )
+             */
 
             Material3Scaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

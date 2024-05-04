@@ -18,12 +18,16 @@ package org.breezyweather.main.fragments
 
 import android.Manifest
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,6 +50,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +60,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -98,7 +104,7 @@ class PushedManagementFragment : ManagementFragment() {
     companion object {
         fun getInstance() = PushedManagementFragment()
     }
-
+    /*
     override fun setSystemBarStyle() {
         requireActivity().window.setSystemBarStyle(
             false,
@@ -106,7 +112,7 @@ class PushedManagementFragment : ManagementFragment() {
             true,
             !requireContext().isDarkMode
         )
-    }
+    }*/
 }
 
 open class ManagementFragment : MainModuleFragment(), TouchReactor {

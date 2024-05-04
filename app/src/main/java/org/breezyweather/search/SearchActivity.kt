@@ -37,9 +37,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
@@ -96,6 +100,9 @@ class SearchActivity : GeoActivity() {
         initModel()
         setContent {
             BreezyWeatherTheme(lightTheme = !isSystemInDarkTheme()) {
+                enableEdgeToEdge(
+                    navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                )
                 ContentView()
             }
         }
@@ -115,15 +122,14 @@ class SearchActivity : GeoActivity() {
         val locationSearchSource = sourceManager.getLocationSearchSourceOrDefault(locationSearchSourceState.value)
 
         Material3Scaffold(
-            modifier = Modifier
-                .imePadding(),
+            modifier = Modifier.imePadding(),
             bottomBar = {
                 BottomAppBar(
                     actions = {
                         Box(
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp)
-                                .weight(100f)
+                                //.weight(100f)
                         ) {
                             Column {
                                 Text(
@@ -159,8 +165,7 @@ class SearchActivity : GeoActivity() {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(paddings)
+                    modifier = Modifier.padding(paddings)
                 ) {
                     Material3SearchBarInputField(
                         query = text,

@@ -26,7 +26,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.SettingNotFoundException
 import android.view.View
@@ -38,7 +37,7 @@ import androidx.annotation.Px
 import androidx.annotation.Size
 import androidx.annotation.StyleRes
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.resources.TextAppearance
 import kotlin.math.min
 
@@ -107,30 +106,27 @@ fun Window.setSystemBarStyle(
     navigationShaderP: Boolean,
     lightNavigationP: Boolean
 ) {
-    var statusShader = statusShaderP
-    var lightStatus = lightStatusP
-    var navigationShader = navigationShaderP
-    var lightNavigation = lightNavigationP
-
     // TODO: remove paragraphs to make bars transparent
-    // colors.
-    ViewCompat.WindowInsetsControllerCompat(view)?.isAppearanceLightStatusBars = darkTheme
-    if (statusShader) {
+    WindowInsetsControllerCompat(this, this.decorView).isAppearanceLightStatusBars = false
+
+    if (statusShaderP) {
         this.statusBarColor = ColorUtils.setAlphaComponent(
-            if (lightStatus) Color.WHITE else Color.BLACK,
-            ((if (lightStatus) 0.5 else 0.2) * 255).toInt()
+            if (lightStatusP) Color.WHITE else Color.BLACK,
+            ((if (lightStatusP) 0.5 else 0.2) * 255).toInt()
         )
     } else {
         this.statusBarColor = Color.TRANSPARENT
     }
 
-    if (navigationShader) {
+    if (navigationShaderP) {
         this.navigationBarColor = ColorUtils.setAlphaComponent(
-            if (lightNavigation) Color.WHITE else Color.BLACK,
-            ((if (lightNavigation) 0.5 else 0.2) * 255).toInt()
+            if (lightNavigationP) Color.WHITE else Color.BLACK,
+            ((if (lightNavigationP) 0.5 else 0.2) * 255).toInt()
         )
+        WindowInsetsControllerCompat(this, this.decorView).isAppearanceLightNavigationBars = false
     } else {
         this.navigationBarColor = Color.TRANSPARENT
+        //WindowInsetsControllerCompat(this, this.decorView).isAppearanceLightNavigationBars = true
     }
 }
 

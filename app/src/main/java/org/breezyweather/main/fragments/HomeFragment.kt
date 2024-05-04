@@ -90,19 +90,6 @@ class HomeFragment : MainModuleFragment() {
 
         initModel()
 
-        /*requireActivity().enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(
-                Color.BLUE
-            ),
-            navigationBarStyle = SystemBarStyle.dark(Color.YELLOW)
-        )*/
-        /*
-        statusShader = scrollListener?.topOverlap == true,
-        lightStatus = false,
-        navigationShader = true,
-        lightNavigation = false
-         */
-
         // attach weather view.
         weatherView = ThemeManager
             .getInstance(requireContext())

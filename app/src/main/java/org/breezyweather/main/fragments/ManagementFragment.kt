@@ -28,17 +28,22 @@ import android.view.animation.Animation
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.MyLocation
@@ -59,6 +64,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -137,6 +143,13 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        /*requireActivity().enableEdgeToEdge(
+            navigationBarStyle = if (!requireActivity().isDarkMode) {
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            } else {
+                SystemBarStyle.dark(Color.TRANSPARENT)
+            }
+        )*/
         initModel()
         initView()
         setCallback(requireActivity() as Callback)
@@ -176,7 +189,9 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
             },
             floatingActionButton = {
                 if (validLocationListState.value.isNotEmpty()) {
-                    Column {
+                    Column(
+                        modifier = Modifier.systemBarsPadding()
+                    ) {
                         if (validLocationListState.value.firstOrNull { it.isCurrentPosition } == null) {
                             FloatingActionButton(
                                 onClick = {
@@ -210,12 +225,14 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .padding(paddings)
+                        .consumeWindowInsets(paddings)
                 ) {
                     if (!viewModel.statementManager.isPostNotificationDialogAlreadyShown &&
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                         !notificationDismissed
                     ) {
-                        val notificationPermissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+                        val notificationPermissionState =
+                            rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
                         if (notificationPermissionState.status != PermissionStatus.Granted) {
                             NotificationCard(
                                 title = stringResource(R.string.dialog_permissions_notification_title),

@@ -17,10 +17,13 @@
 package org.breezyweather.daily
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager.widget.ViewPager
@@ -40,6 +43,7 @@ import org.breezyweather.common.extensions.dpToPx
 import org.breezyweather.common.extensions.getFormattedDate
 import org.breezyweather.common.extensions.getFormattedMediumDayAndMonthInAdditionalCalendar
 import org.breezyweather.common.extensions.getLongWeekdayDayMonth
+import org.breezyweather.common.extensions.isDarkMode
 import org.breezyweather.common.extensions.launchUI
 import org.breezyweather.common.ui.widgets.insets.FitSystemBarAppBarLayout
 import org.breezyweather.common.ui.widgets.insets.FitSystemBarRecyclerView
@@ -71,6 +75,13 @@ class DailyWeatherActivity : GeoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge(
+            navigationBarStyle = if (!this.isDarkMode) {
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            } else {
+                SystemBarStyle.dark(Color.TRANSPARENT)
+            }
+        )
         setContentView(R.layout.activity_weather_daily)
         initData()
         initWidget()

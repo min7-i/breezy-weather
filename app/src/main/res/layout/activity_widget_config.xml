@@ -351,6 +351,8 @@
                         android:id="@+id/activity_widget_config_subtitle_inputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="@string/widget_label_subtitle_data"
+                        android:textColorHint="@color/colorTextContent"
                         android:padding="@dimen/normal_margin">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -358,11 +360,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textFilter"
-                            android:hint="@string/widget_label_subtitle_data"
-                            android:textColorHint="@color/colorTextSubtitle"
-                            android:textColorHighlight="@color/colorTextSubtitle"
                             android:textSize="@dimen/content_text_size"
                             android:textColor="@color/colorTextContent"
+                            android:textColorHighlight="@color/colorTextTitle"
                             android:layout_margin="@dimen/little_margin"
                             android:maxLines="1"
                             tools:ignore="Autofill" />

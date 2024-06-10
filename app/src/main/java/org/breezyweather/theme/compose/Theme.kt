@@ -17,6 +17,7 @@
 package org.breezyweather.theme.compose
 
 import android.os.Build
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
@@ -112,10 +113,11 @@ fun BreezyWeatherTheme(
         else ->
             DarkThemeColors
     }
+    Log.d("theme", "lightTheme $lightTheme")
     val colors = if (lightTheme) DayColors else NightColors
 
     ProvideBreezyWeatherDayNightColors(colors = colors) {
-        //SetSystemBarsColors(isDarkMode = !lightTheme)
+        SetSystemBarsColors(isDarkMode = !lightTheme)
 
         MaterialTheme(
             colorScheme = scheme,

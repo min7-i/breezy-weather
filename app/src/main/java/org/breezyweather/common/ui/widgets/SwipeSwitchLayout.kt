@@ -108,9 +108,9 @@ class SwipeSwitchLayout @JvmOverloads constructor(
                 val x = ev.x
                 val y = ev.y
                 if (!mIsBeingDragged && !mIsHorizontalDragged) {
-                    if (abs(x - mLastX) > mTouchSlop || abs(y - mLastY) > mTouchSlop) {
+                    if (abs(x - mLastX) > mTouchSlop * 0.25F || abs(y - mLastY) > mTouchSlop * 0.25F) {
                         mIsBeingDragged = true
-                        if (abs(x - mLastX) > abs(y - mLastY)) {
+                        if (abs(x - mLastX) > abs(y - mLastY) * 0.25F) {
                             mLastX += (if (x > mLastX) mTouchSlop else -mTouchSlop).toFloat()
                             mIsHorizontalDragged = true
                         }
@@ -346,7 +346,7 @@ class SwipeSwitchLayout @JvmOverloads constructor(
     companion object {
         private const val SWIPE_DISTANCE_RATIO = 0.5
         private const val SWIPE_RATIO = 0.4f
-        private const val NESTED_SCROLLING_RATIO = SWIPE_RATIO // 0.075f
+        private const val NESTED_SCROLLING_RATIO = 0.075f //SWIPE_RATIO // 0.075f
         const val SWIPE_DIRECTION_LEFT = -1
         const val SWIPE_DIRECTION_RIGHT = 1
     }

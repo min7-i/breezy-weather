@@ -21,9 +21,14 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.widget.TextView
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager.widget.ViewPager
@@ -49,6 +54,7 @@ import org.breezyweather.common.ui.widgets.insets.FitSystemBarAppBarLayout
 import org.breezyweather.common.ui.widgets.insets.FitSystemBarRecyclerView
 import org.breezyweather.common.ui.widgets.insets.FitSystemBarViewPager
 import org.breezyweather.common.utils.ColorUtils
+import org.breezyweather.common.utils.helpers.doOnApplyWindowInsets
 import org.breezyweather.daily.adapter.DailyWeatherAdapter
 import org.breezyweather.domain.weather.model.isToday
 import org.breezyweather.sources.SourceManager
@@ -82,7 +88,16 @@ class DailyWeatherActivity : GeoActivity() {
                 SystemBarStyle.dark(Color.TRANSPARENT)
             }
         )
+        
         setContentView(R.layout.activity_weather_daily)
+
+        val dailyContainer = findViewById<CoordinatorLayout>(R.id.activity_weather_daily_container)
+        dailyContainer.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                left = padding.left + insets.systemWindowInsetLeft,
+                right = padding.right + insets.systemWindowInsetRight
+            )
+        }
         initData()
         initWidget()
     }

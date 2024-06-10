@@ -25,29 +25,39 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import org.breezyweather.BreezyWeather
 import org.breezyweather.common.basic.insets.FitHorizontalSystemBarRootLayout
 import org.breezyweather.common.extensions.isDarkMode
 import org.breezyweather.common.extensions.setSystemBarStyle
 import org.breezyweather.common.snackbar.SnackbarContainer
+import org.breezyweather.common.utils.helpers.doOnApplyWindowInsets
 
 abstract class GeoActivity : AppCompatActivity() {
 
-    lateinit var fitHorizontalSystemBarRootLayout: FitHorizontalSystemBarRootLayout
-
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*enableEdgeToEdge(
+        super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge(
             navigationBarStyle = if (!this.isDarkMode) {
                 SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
             } else {
                 SystemBarStyle.dark(Color.TRANSPARENT)
             }
-        )*/
-        super.onCreate(savedInstanceState)
-        fitHorizontalSystemBarRootLayout =
-            FitHorizontalSystemBarRootLayout(this)
+        )
+
+        //window.decorView.setBackgroundColor(Color.BLACK)
+        /*
+        window.decorView.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                left = insets.systemWindowInsetLeft,
+                right = padding.right + insets.systemWindowInsetRight
+            )
+        }
+
+         */
 
         BreezyWeather.instance.addActivity(this)
         /*
@@ -57,20 +67,6 @@ abstract class GeoActivity : AppCompatActivity() {
             true,
             !this.isDarkMode
         )*/
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        // decor -> fit horizontal system bar -> decor child.
-        val decorView = window.decorView as ViewGroup
-        val decorChild = decorView.getChildAt(0) as ViewGroup
-
-        decorView.removeView(decorChild)
-        decorView.addView(fitHorizontalSystemBarRootLayout)
-
-        fitHorizontalSystemBarRootLayout.removeAllViews()
-        fitHorizontalSystemBarRootLayout.addView(decorChild)
     }
 
     override fun onNewIntent(intent: Intent) {

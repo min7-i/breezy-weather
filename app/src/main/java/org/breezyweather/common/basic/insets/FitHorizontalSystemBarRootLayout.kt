@@ -27,6 +27,7 @@ class FitHorizontalSystemBarRootLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var mFitKeyboardExpanded = false
+    /*
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         val r = Rect(
             insets.systemWindowInsetLeft,
@@ -45,6 +46,8 @@ class FitHorizontalSystemBarRootLayout @JvmOverloads constructor(
         setPadding(r.left, 0, r.right, 0)
         return insets
     }
+
+     */
 
     fun setFitKeyboardExpanded(fit: Boolean) {
         mFitKeyboardExpanded = fit

@@ -190,7 +190,7 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
             floatingActionButton = {
                 if (validLocationListState.value.isNotEmpty()) {
                     Column(
-                        modifier = Modifier.systemBarsPadding()
+                        //modifier = Modifier.systemBarsPadding()
                     ) {
                         if (validLocationListState.value.firstOrNull { it.isCurrentPosition } == null) {
                             FloatingActionButton(

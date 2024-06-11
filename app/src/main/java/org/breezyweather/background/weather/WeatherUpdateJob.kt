@@ -53,6 +53,7 @@ import org.breezyweather.common.bus.EventBus
 import org.breezyweather.common.extensions.createFileInCacheDir
 import org.breezyweather.common.extensions.getFormattedDate
 import org.breezyweather.common.extensions.getUriCompat
+import org.breezyweather.common.extensions.hasNotificationPermission
 import org.breezyweather.common.extensions.isOnline
 import org.breezyweather.common.extensions.isRunning
 import org.breezyweather.common.extensions.setForegroundSafely
@@ -129,7 +130,10 @@ class WeatherUpdateJob @AssistedInject constructor(
                 }
             } finally {
                 notifier.cancelProgressNotification()
-                if (BuildConfig.FLAVOR != "freenet" && SettingsManager.getInstance(context).isAppUpdateCheckEnabled) {
+                if (BuildConfig.FLAVOR != "freenet" &&
+                    SettingsManager.getInstance(context).isAppUpdateCheckEnabled &&
+                    context.hasNotificationPermission()
+                ) {
                     try {
                         updateChecker.checkForUpdate(context, forceCheck = false)
                     } catch (e: Exception) {
@@ -335,7 +339,7 @@ class WeatherUpdateJob @AssistedInject constructor(
                 newUpdates.firstOrNull { it.first.formattedId == location.formattedId }
 
             // Send alert and precipitation for the first location
-            if (indexOfFirstLocation != null) {
+            if (indexOfFirstLocation != null && context.hasNotificationPermission()) {
                 Notifications.checkAndSendAlert(
                     applicationContext,
                     location,

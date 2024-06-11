@@ -231,20 +231,7 @@ class SettingsActivity : GeoActivity() {
                     context = this@SettingsActivity,
                     onNavigateBack = { onBack() },
                     todayForecastEnabled = remember { todayForecastEnabledState }.value,
-                    tomorrowForecastEnabled = remember { tomorrowForecastEnabledState }.value,
-                    postNotificationPermissionEnsurer = { succeedCallback ->
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                            !this@SettingsActivity.hasPermission(Manifest.permission.POST_NOTIFICATIONS)
-                        ) {
-                            requestPostNotificationPermissionSucceedCallback = succeedCallback
-                            requestPermissions(
-                                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                                PERMISSION_CODE_POST_NOTIFICATION
-                            )
-                        } else {
-                            succeedCallback()
-                        }
-                    }
+                    tomorrowForecastEnabled = remember { tomorrowForecastEnabledState }.value
                 )
             }
             composable(SettingsScreenRouter.Widgets.route) {

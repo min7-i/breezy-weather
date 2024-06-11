@@ -28,6 +28,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import org.breezyweather.settings.SettingsManager
 
 /**
  * Taken from Mihon
@@ -115,4 +116,11 @@ fun buildNotificationChannel(
     val builder = NotificationChannelCompat.Builder(channelId, channelImportance)
     builder.block()
     return builder.build()
+}
+
+fun Context.updateForecastNotificationSettings(value: Boolean) {
+    SettingsManager.getInstance(this).apply {
+        if (isTodayForecastEnabled != value) isTodayForecastEnabled = value
+        if (isTomorrowForecastEnabled != value) isTomorrowForecastEnabled = value
+    }
 }

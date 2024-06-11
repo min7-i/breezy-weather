@@ -595,6 +595,8 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_summary">Notifications of weather alerts, precipitations or forecast for the first location</string>
     <string name="settings_notifications_app_updates_check">Notifications of app updates</string>
+    <string name="settings_notifications_permission">Notification permission required</string>
+    <string name="settings_notifications_permission_summary">Tap to allow notification permissions required for showing alerts, precipitation and forecasts.</string>
     <string name="settings_notifications_section_general" translatable="false">@string/settings_section_general</string>
     <!-- “important” means we won’t send notifications for minor severity alerts -->
     <string name="settings_notifications_alerts_title">Notifications of severe weather alerts</string>

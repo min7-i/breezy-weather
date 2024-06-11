@@ -31,6 +31,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import breezyweather.domain.location.model.Location
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.breezyweather.common.basic.GeoActivity
@@ -179,6 +183,15 @@ class SettingsActivity : GeoActivity() {
         val startDestination = intent.getStringExtra(KEY_SETTINGS_ACTIVITY_START_DESTINATION)
             ?: SettingsScreenRouter.Root.route
 
+        val permissionState = rememberMultiplePermissionsState(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                listOf(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                // permission not needed
+                emptyList()
+            }
+        )
+
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -306,6 +319,34 @@ class SettingsActivity : GeoActivity() {
                     onNavigateBack = { onBack() }
                 )
             }
+        }
+    }
+
+    /*
+    @Composable
+    private fun observeNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationPermissionState =
+                rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+            notificationPermissionState.status == PermissionStatus.Granted
+        } else {
+            true
+        }
+    }*/
+
+    private fun postNotificationPermission(
+        succeedCallback: () -> Unit
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            !this@SettingsActivity.hasPermission(Manifest.permission.POST_NOTIFICATIONS)) {
+
+            requestPostNotificationPermissionSucceedCallback = succeedCallback
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                PERMISSION_CODE_POST_NOTIFICATION
+            )
+        } else {
+            succeedCallback()
         }
     }
 

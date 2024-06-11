@@ -17,8 +17,10 @@
 package org.breezyweather.settings.compose
 
 import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import org.breezyweather.R
 import org.breezyweather.background.forecast.TodayForecastNotificationJob
 import org.breezyweather.background.forecast.TomorrowForecastNotificationJob
@@ -26,8 +28,10 @@ import org.breezyweather.common.basic.models.options.UpdateInterval
 import org.breezyweather.settings.SettingsManager
 import org.breezyweather.settings.preference.bottomInsetItem
 import org.breezyweather.settings.preference.composables.PreferenceScreen
+import org.breezyweather.settings.preference.composables.PreferenceView
 import org.breezyweather.settings.preference.composables.SwitchPreferenceView
 import org.breezyweather.settings.preference.composables.TimePickerPreferenceView
+import org.breezyweather.settings.preference.listPreferenceItem
 import org.breezyweather.settings.preference.sectionFooterItem
 import org.breezyweather.settings.preference.sectionHeaderItem
 import org.breezyweather.settings.preference.switchPreferenceItem
@@ -39,8 +43,23 @@ fun NotificationsSettingsScreen(
     todayForecastEnabled: Boolean,
     tomorrowForecastEnabled: Boolean,
     paddingValues: PaddingValues,
+    hasNotificationPermission: Boolean,
     postNotificationPermissionEnsurer: (succeedCallback: () -> Unit) -> Unit
 ) = PreferenceScreen(paddingValues = paddingValues) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission) {
+        listPreferenceItem(R.string.settings_notifications_permission) {
+            PreferenceView(
+                iconId = R.drawable.ic_about,
+                title = stringResource(it),
+                summary = stringResource(R.string.settings_notifications_permission_summary), // TODO: edit summary text
+                onClick = {
+                    postNotificationPermissionEnsurer{
+                        // ask for notification permission
+                    }
+                }
+            )
+        }
+    }
     sectionHeaderItem(R.string.settings_notifications_section_general)
     switchPreferenceItem(R.string.settings_notifications_alerts_title) { id ->
         SwitchPreferenceView(
@@ -51,14 +70,10 @@ fun NotificationsSettingsScreen(
             } else R.string.settings_unavailable_no_background_updates,
             checked = SettingsManager.getInstance(context).isAlertPushEnabled &&
                 SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER,
-            enabled = SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER,
+            enabled = SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER
+                    && hasNotificationPermission,
             onValueChanged = {
                 SettingsManager.getInstance(context).isAlertPushEnabled = it
-                if (it) {
-                    postNotificationPermissionEnsurer {
-                        // Do nothing
-                    }
-                }
             },
         )
     }
@@ -71,14 +86,10 @@ fun NotificationsSettingsScreen(
             } else R.string.settings_unavailable_no_background_updates,
             checked = SettingsManager.getInstance(context).isPrecipitationPushEnabled &&
                 SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER,
-            enabled = SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER,
+            enabled = SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER
+                    && hasNotificationPermission,
             onValueChanged = {
                 SettingsManager.getInstance(context).isPrecipitationPushEnabled = it
-                if (it) {
-                    postNotificationPermissionEnsurer {
-                        // Do nothing
-                    }
-                }
             },
         )
     }
@@ -92,6 +103,7 @@ fun NotificationsSettingsScreen(
             summaryOnId = R.string.settings_enabled,
             summaryOffId = R.string.settings_disabled,
             checked = todayForecastEnabled,
+            enabled = hasNotificationPermission,
             onValueChanged = {
                 SettingsManager.getInstance(context).isTodayForecastEnabled = it
                 TodayForecastNotificationJob.setupTask(context, false)
@@ -102,7 +114,7 @@ fun NotificationsSettingsScreen(
         TimePickerPreferenceView(
             titleId = id,
             currentTime = SettingsManager.getInstance(context).todayForecastTime,
-            enabled = todayForecastEnabled,
+            enabled = todayForecastEnabled && hasNotificationPermission,
             onValueChanged = {
                 SettingsManager.getInstance(context).todayForecastTime = it
                 TodayForecastNotificationJob.setupTask(context, false)
@@ -115,6 +127,7 @@ fun NotificationsSettingsScreen(
             summaryOnId = R.string.settings_enabled,
             summaryOffId = R.string.settings_disabled,
             checked = tomorrowForecastEnabled,
+            enabled = hasNotificationPermission,
             onValueChanged = {
                 SettingsManager.getInstance(context).isTomorrowForecastEnabled = it
                 TomorrowForecastNotificationJob.setupTask(context, false)
@@ -125,7 +138,7 @@ fun NotificationsSettingsScreen(
         TimePickerPreferenceView(
             titleId = id,
             currentTime = SettingsManager.getInstance(context).tomorrowForecastTime,
-            enabled = tomorrowForecastEnabled,
+            enabled = tomorrowForecastEnabled && hasNotificationPermission,
             onValueChanged = {
                 SettingsManager.getInstance(context).tomorrowForecastTime = it
                 TomorrowForecastNotificationJob.setupTask(context, false)

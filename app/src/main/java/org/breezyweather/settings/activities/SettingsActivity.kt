@@ -300,6 +300,8 @@ class SettingsActivity : GeoActivity() {
                             }
                         },
                         broadcastSources = sourceManager.getBroadcastSources(),
+                        hasNotificationPermission = permissionState.permissions.isEmpty()
+                                || permissionState.permissions[0].status == PermissionStatus.Granted
                     )
                 }
                 composable(SettingsScreenRouter.Location.route) {

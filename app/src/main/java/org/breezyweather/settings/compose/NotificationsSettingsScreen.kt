@@ -18,6 +18,8 @@ package org.breezyweather.settings.compose
 
 import android.content.Context
 import android.os.Build
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -55,21 +57,28 @@ fun NotificationsSettingsScreen(
 ) {
     val scrollBehavior = generateCollapsedScrollBehavior()
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission) {
-        listPreferenceItem(R.string.settings_notifications_permission) {
-            PreferenceView(
-                iconId = R.drawable.ic_about,
-                title = stringResource(it),
-                summary = stringResource(R.string.settings_notifications_permission_summary), // TODO: edit summary text
-                onClick = {
-                    postNotificationPermissionEnsurer{
-                        // ask for notification permission
-                    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        listPreferenceItem(R.string.settings_notifications_permission) { title ->
+            AnimatedContent(
+                targetState = hasNotificationPermission,
+                label = ""
+            ) {
+                if (!it) {
+                    PreferenceView(
+                        iconId = R.drawable.ic_about,
+                        title = stringResource(title),
+                        summary = stringResource(R.string.settings_notifications_permission_summary), // TODO: edit summary text
+                        onClick = {
+                            postNotificationPermissionEnsurer {
+                                // ask for notification permission
+                            }
+                        }
+                    )
                 }
-            )
+            }
         }
     }
-    
+
     Material3Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {

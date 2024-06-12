@@ -19,8 +19,19 @@ package org.breezyweather.settings.compose
 import android.content.Context
 import android.os.Build
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import org.breezyweather.R
 import org.breezyweather.background.forecast.TodayForecastNotificationJob
@@ -49,22 +60,26 @@ fun NotificationsSettingsScreen(
 ) = PreferenceScreen(paddingValues = paddingValues) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         listPreferenceItem(R.string.settings_notifications_permission) { title ->
-            AnimatedContent(
-                targetState = hasNotificationPermission,
+            AnimatedVisibility(
+                visible = !hasNotificationPermission,
+                enter = fadeIn() + expandVertically(
+                    expandFrom = Alignment.Top
+                ), // + slideInVertically(),
+                exit = shrinkVertically( // slideOutVertically() +
+                    shrinkTowards = Alignment.Top
+                ) + fadeOut(),
                 label = ""
             ) {
-                if (!it) {
-                    PreferenceView(
-                        iconId = R.drawable.ic_about,
-                        title = stringResource(title),
-                        summary = stringResource(R.string.settings_notifications_permission_summary), // TODO: edit summary text
-                        onClick = {
-                            postNotificationPermissionEnsurer {
-                                // ask for notification permission
-                            }
+                PreferenceView(
+                    iconId = R.drawable.ic_about,
+                    title = stringResource(title),
+                    summary = stringResource(R.string.settings_notifications_permission_summary), // TODO: edit summary text
+                    onClick = {
+                        postNotificationPermissionEnsurer {
+                            // ask for notification permission
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     }

@@ -16,9 +16,11 @@
 
 package org.breezyweather.background.forecast
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
+import androidx.core.content.PermissionChecker
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
@@ -30,7 +32,9 @@ import breezyweather.data.weather.WeatherRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import org.breezyweather.common.extensions.cancelNotification
+import org.breezyweather.common.extensions.hasPermission
 import org.breezyweather.common.extensions.isRunning
+import org.breezyweather.common.extensions.notify
 import org.breezyweather.common.extensions.setForegroundSafely
 import org.breezyweather.common.extensions.workManager
 import org.breezyweather.common.utils.helpers.LogHelper
@@ -103,7 +107,7 @@ class TodayForecastNotificationJob @AssistedInject constructor(
 
         fun setupTask(context: Context, nextDay: Boolean) {
             val settings = SettingsManager.getInstance(context)
-            if (settings.isTodayForecastEnabled) {
+            if (settings.isTodayForecastEnabled && hasNotificationPermission(context)) {
                 val request = OneTimeWorkRequestBuilder<TodayForecastNotificationJob>()
                     .setInitialDelay(
                         getForecastAlarmDelayInMinutes(settings.todayForecastTime, nextDay),
@@ -135,6 +139,12 @@ class TodayForecastNotificationJob @AssistedInject constructor(
                 delay += 1.days.inWholeMinutes
             }
             return delay
+        }
+
+        private fun hasNotificationPermission(context: Context): Boolean {
+            return !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                !context.hasPermission(Manifest.permission.POST_NOTIFICATIONS)
+            )
         }
     }
 }

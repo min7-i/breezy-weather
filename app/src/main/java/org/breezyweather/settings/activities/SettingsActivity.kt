@@ -46,6 +46,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.breezyweather.R
+import org.breezyweather.background.forecast.TodayForecastNotificationJob
 import org.breezyweather.common.basic.GeoActivity
 import org.breezyweather.common.bus.EventBus
 import org.breezyweather.common.extensions.hasPermission
@@ -197,6 +198,16 @@ class SettingsActivity : GeoActivity() {
             }
         )
 
+        // Set notifications to disabled when notification permission is not granted. This prevents
+        // jobs from trying to still post a notification due to enabled settings.
+        if (permissionState.permissions.isNotEmpty() && permissionState.permissions[0].status !=
+            PermissionStatus.Granted) {
+            SettingsManager.getInstance(this).isAlertPushEnabled = false
+            SettingsManager.getInstance(this).isPrecipitationPushEnabled = false
+            SettingsManager.getInstance(this).isTodayForecastEnabled = false
+            SettingsManager.getInstance(this).isTomorrowForecastEnabled = false
+        }
+
         Material3Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
@@ -334,18 +345,6 @@ class SettingsActivity : GeoActivity() {
             }
         }
     }
-
-    /*
-    @Composable
-    private fun observeNotificationPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val notificationPermissionState =
-                rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-            notificationPermissionState.status == PermissionStatus.Granted
-        } else {
-            true
-        }
-    }*/
 
     private fun postNotificationPermission(
         succeedCallback: () -> Unit

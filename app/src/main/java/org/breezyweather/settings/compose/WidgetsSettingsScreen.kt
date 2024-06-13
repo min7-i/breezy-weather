@@ -269,8 +269,10 @@ fun WidgetsSettingsScreen(
                 visible = !hasNotificationPermission,
                 enter = fadeIn() + expandVertically(
                     expandFrom = Alignment.Top
-                ),
-                exit = shrinkVertically(
+                ) + slideInVertically(),
+                exit = slideOutVertically(
+                    targetOffsetY = { -it / 2 }
+                ) + shrinkVertically(
                     shrinkTowards = Alignment.Top
                 ) + fadeOut(),
                 label = ""

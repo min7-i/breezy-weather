@@ -74,8 +74,10 @@ fun NotificationsSettingsScreen(
                 visible = !hasNotificationPermission,
                 enter = fadeIn() + expandVertically(
                     expandFrom = Alignment.Top
-                ), // + slideInVertically(),
-                exit = shrinkVertically( // slideOutVertically() +
+                ) + slideInVertically(),
+                exit = slideOutVertically(
+                    targetOffsetY = { -it / 2 }
+                ) + shrinkVertically(
                     shrinkTowards = Alignment.Top
                 ) + fadeOut(),
                 label = ""

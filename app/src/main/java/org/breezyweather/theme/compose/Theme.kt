@@ -17,10 +17,15 @@
 package org.breezyweather.theme.compose
 
 import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -106,9 +111,12 @@ fun BreezyWeatherTheme(
         else ->
             DarkThemeColors
     }
+
     val colors = if (lightTheme) DayColors else NightColors
 
     ProvideBreezyWeatherDayNightColors(colors = colors) {
+        SetSystemBarsColors(isDarkMode = !lightTheme)
+
         MaterialTheme(
             colorScheme = scheme,
             typography = BreezyWeatherTypography,
@@ -132,6 +140,42 @@ fun ProvideBreezyWeatherDayNightColors(
         LocalDayNightColors provides value,
         content = content
     )
+}
+
+@Composable
+fun SetSystemBarsColors(
+    isDarkMode: Boolean = isSystemInDarkTheme(),
+    statusBarLight: Int = android.graphics.Color.TRANSPARENT,
+    statusBarDark: Int = android.graphics.Color.TRANSPARENT,
+    navigationBarLight: Int = android.graphics.Color.TRANSPARENT,
+    navigationBarDark: Int = android.graphics.Color.TRANSPARENT
+) {
+    val context = LocalContext.current as ComponentActivity
+
+    DisposableEffect(isDarkMode) {
+        context.enableEdgeToEdge(
+            statusBarStyle = if (!isDarkMode) {
+                SystemBarStyle.light(
+                    statusBarLight,
+                    statusBarDark
+                )
+            } else {
+                SystemBarStyle.dark(
+                    statusBarDark
+                )
+            },
+            navigationBarStyle = if(!isDarkMode){
+                SystemBarStyle.light(
+                    navigationBarLight,
+                    navigationBarDark
+                )
+            } else {
+                SystemBarStyle.dark(navigationBarDark)
+            }
+        )
+
+        onDispose { }
+    }
 }
 
 object DayNightTheme {

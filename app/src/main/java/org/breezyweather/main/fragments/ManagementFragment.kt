@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -100,12 +101,14 @@ class PushedManagementFragment : ManagementFragment() {
     }
 
     override fun setSystemBarStyle() {
+        /*
         requireActivity().window.setSystemBarStyle(
             false,
             !requireContext().isDarkMode,
             true,
             !requireContext().isDarkMode
         )
+         */
     }
 }
 
@@ -170,7 +173,7 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
             },
             floatingActionButton = {
                 if (validLocationListState.value.isNotEmpty()) {
-                    Column {
+                    Column { // TODO: check if systemBarsPadding & consumeInsets is needed
                         if (validLocationListState.value.firstOrNull { it.isCurrentPosition } == null) {
                             FloatingActionButton(
                                 onClick = {
@@ -204,6 +207,7 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .padding(paddings)
+                        .consumeWindowInsets(paddings) // TODO: check if needed
                 ) {
                     if (!viewModel.statementManager.isPostNotificationDialogAlreadyShown &&
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&

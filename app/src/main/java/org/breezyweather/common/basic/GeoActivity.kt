@@ -17,8 +17,11 @@
 package org.breezyweather.common.basic
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -35,17 +38,28 @@ abstract class GeoActivity : AppCompatActivity() {
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge(
+            navigationBarStyle = if (!this.isDarkMode) {
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            } else {
+                SystemBarStyle.dark(Color.TRANSPARENT)
+            }
+        )
+
         fitHorizontalSystemBarRootLayout =
             FitHorizontalSystemBarRootLayout(this)
 
         BreezyWeather.instance.addActivity(this)
 
+        /*
         window.setSystemBarStyle(
             false,
             !this.isDarkMode,
             true,
             !this.isDarkMode
         )
+         */
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

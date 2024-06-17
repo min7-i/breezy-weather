@@ -17,11 +17,14 @@
 package org.breezyweather.search
 
 import android.content.Intent
+import androidx.activity.SystemBarStyle
+import android.graphics.Color
 import android.os.Bundle
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,11 +32,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
@@ -89,6 +91,9 @@ class SearchActivity : GeoActivity() {
         initModel()
         setContent {
             BreezyWeatherTheme(lightTheme = !isSystemInDarkTheme()) {
+                enableEdgeToEdge(
+                    navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                )
                 ContentView()
             }
         }
@@ -175,7 +180,9 @@ class SearchActivity : GeoActivity() {
                     }
                     if (listResourceState.value.first.isNotEmpty()) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(listResourceState.value.first) { location ->

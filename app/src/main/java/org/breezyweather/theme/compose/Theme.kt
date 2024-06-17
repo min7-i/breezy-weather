@@ -17,7 +17,6 @@
 package org.breezyweather.theme.compose
 
 import android.os.Build
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
@@ -27,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -113,7 +111,7 @@ fun BreezyWeatherTheme(
         else ->
             DarkThemeColors
     }
-    Log.d("theme", "lightTheme $lightTheme")
+
     val colors = if (lightTheme) DayColors else NightColors
 
     ProvideBreezyWeatherDayNightColors(colors = colors) {
@@ -154,8 +152,7 @@ fun SetSystemBarsColors(
 ) {
     val context = LocalContext.current as ComponentActivity
 
-    //DisposableEffect(isDarkMode) {
-    //SideEffect {
+    DisposableEffect(isDarkMode) {
         context.enableEdgeToEdge(
             statusBarStyle = if (!isDarkMode) {
                 SystemBarStyle.light(
@@ -177,8 +174,8 @@ fun SetSystemBarsColors(
             }
         )
 
-        //onDispose { }
-    //}
+        onDispose { }
+    }
 }
 
 object DayNightTheme {

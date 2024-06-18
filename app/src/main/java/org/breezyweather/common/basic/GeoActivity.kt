@@ -26,14 +26,10 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import org.breezyweather.BreezyWeather
-import org.breezyweather.common.basic.insets.FitHorizontalSystemBarRootLayout
 import org.breezyweather.common.extensions.isDarkMode
-import org.breezyweather.common.extensions.setSystemBarStyle
 import org.breezyweather.common.snackbar.SnackbarContainer
 
 abstract class GeoActivity : AppCompatActivity() {
-
-    lateinit var fitHorizontalSystemBarRootLayout: FitHorizontalSystemBarRootLayout
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +43,6 @@ abstract class GeoActivity : AppCompatActivity() {
             }
         )
 
-        fitHorizontalSystemBarRootLayout =
-            FitHorizontalSystemBarRootLayout(this)
-
         BreezyWeather.instance.addActivity(this)
 
         /*
@@ -60,20 +53,6 @@ abstract class GeoActivity : AppCompatActivity() {
             !this.isDarkMode
         )
          */
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        // decor -> fit horizontal system bar -> decor child.
-        val decorView = window.decorView as ViewGroup
-        val decorChild = decorView.getChildAt(0) as ViewGroup
-
-        decorView.removeView(decorChild)
-        decorView.addView(fitHorizontalSystemBarRootLayout)
-
-        fitHorizontalSystemBarRootLayout.removeAllViews()
-        fitHorizontalSystemBarRootLayout.addView(decorChild)
     }
 
     override fun onNewIntent(intent: Intent) {

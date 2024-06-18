@@ -33,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -57,6 +58,7 @@ import org.breezyweather.common.ui.composables.AlertDialogNoPadding
 import org.breezyweather.common.ui.composables.LocationPreference
 import org.breezyweather.common.utils.helpers.IntentHelper
 import org.breezyweather.common.utils.helpers.SnackbarHelper
+import org.breezyweather.common.utils.helpers.doOnApplyWindowInsets
 import org.breezyweather.databinding.ActivityMainBinding
 import org.breezyweather.main.fragments.HomeFragment
 import org.breezyweather.main.fragments.ManagementFragment
@@ -69,6 +71,7 @@ import org.breezyweather.sources.SourceManager
 import org.breezyweather.theme.compose.BreezyWeatherTheme
 import org.breezyweather.theme.compose.DayNightTheme
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : GeoActivity(),
@@ -180,6 +183,20 @@ class MainActivity : GeoActivity(),
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        binding.root.setBackgroundColor( // TODO: use updateDayNightColor instead | try decor view
+            MainThemeColorProvider.getColor(
+                lightTheme = !this.isDarkMode,
+                id = android.R.attr.colorBackground
+            )
+        )
+        binding.root.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                left = padding.left + insets.systemWindowInsetLeft,
+                right = padding.right + insets.systemWindowInsetRight
+            )
+        }
+
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             fragmentsLifecycleCallback, false
         )
@@ -238,7 +255,7 @@ class MainActivity : GeoActivity(),
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         updateSystemBarStyle()
-        updateDayNightColors()
+        //updateDayNightColors()
     }
 
     override fun onStart() {
@@ -289,7 +306,7 @@ class MainActivity : GeoActivity(),
     private fun initView() {
         binding.root.post {
             if (isActivityCreated) {
-                updateDayNightColors()
+                //updateDayNightColors()
             }
         }
 
@@ -606,7 +623,7 @@ class MainActivity : GeoActivity(),
             findHomeFragment()?.setSystemBarStyle()
         }
     }
-
+/*
     private fun updateDayNightColors() {
         fitHorizontalSystemBarRootLayout.setBackgroundColor(
             MainThemeColorProvider.getColor(
@@ -615,6 +632,7 @@ class MainActivity : GeoActivity(),
             )
         )
     }
+*/
 
     private val isOrWillManagementFragmentVisible: Boolean
         get() = binding.drawerLayout?.isUnfold

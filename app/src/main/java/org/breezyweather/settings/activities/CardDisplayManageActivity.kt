@@ -25,6 +25,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.Px
 import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +37,7 @@ import org.breezyweather.common.ui.decorations.GridMarginsDecoration
 import org.breezyweather.common.ui.decorations.ListDecoration
 import org.breezyweather.common.ui.widgets.slidingItem.SlidingItemTouchCallback
 import org.breezyweather.common.utils.ColorUtils
+import org.breezyweather.common.utils.helpers.doOnApplyWindowInsets
 import org.breezyweather.databinding.ActivityCardDisplayManageBinding
 import org.breezyweather.settings.SettingsManager
 import org.breezyweather.settings.adapters.CardDisplayAdapter
@@ -89,8 +91,28 @@ class CardDisplayManageActivity : GeoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mBinding = ActivityCardDisplayManageBinding.inflate(layoutInflater)
+
         setContentView(mBinding.root)
+
+        mBinding.root.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                left = padding.left + insets.systemWindowInsetLeft,
+                right = padding.right + insets.systemWindowInsetRight
+            )
+        }/*
+        mBinding.appBar.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                top = padding.top + insets.systemWindowInsetTop
+            )
+        }
+        mBinding.bottomRecyclerView.doOnApplyWindowInsets { view, insets, padding ->
+            view.updatePadding(
+                bottom = padding.bottom + insets.systemWindowInsetBottom
+            )
+        }*/
+
         mElevation = resources.getDimensionPixelSize(R.dimen.touch_rise_z)
         mBinding.appBar.injectDefaultSurfaceTintColor()
         mBinding.toolbar.setBackgroundColor(
@@ -101,6 +123,7 @@ class CardDisplayManageActivity : GeoActivity() {
             )
         )
         mBinding.toolbar.setNavigationOnClickListener { finish() }
+
         val displayTags = SettingsManager.getInstance(this).cardDisplayList
         mCardDisplayAdapter = CardDisplayAdapter(
             displayTags.toMutableList(),

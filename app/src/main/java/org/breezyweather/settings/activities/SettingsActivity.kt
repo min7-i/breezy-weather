@@ -23,10 +23,19 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -37,9 +46,15 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.breezyweather.R
+import org.breezyweather.background.forecast.TodayForecastNotificationJob
 import org.breezyweather.common.basic.GeoActivity
 import org.breezyweather.common.bus.EventBus
 import org.breezyweather.common.extensions.hasPermission
+import org.breezyweather.common.ui.widgets.Material3Scaffold
+import org.breezyweather.common.ui.widgets.generateCollapsedScrollBehavior
+import org.breezyweather.common.ui.widgets.insets.FitStatusBarTopAppBar
+import org.breezyweather.common.utils.helpers.IntentHelper
 import org.breezyweather.settings.SettingsChangedMessage
 import org.breezyweather.settings.SettingsManager
 import org.breezyweather.settings.compose.AppearanceSettingsScreen
@@ -194,12 +209,14 @@ class SettingsActivity : GeoActivity() {
 
         // Set notifications to disabled when notification permission is not granted. This prevents
         // jobs from trying to still post a notification due to enabled settings.
-        if (permissionState.permissions.isNotEmpty() && permissionState.permissions[0].status !=
-            PermissionStatus.Granted) {
-            SettingsManager.getInstance(this).isAlertPushEnabled = false
-            SettingsManager.getInstance(this).isPrecipitationPushEnabled = false
-            SettingsManager.getInstance(this).isTodayForecastEnabled = false
-            SettingsManager.getInstance(this).isTomorrowForecastEnabled = false
+        LaunchedEffect(permissionState) {
+            if (permissionState.permissions.isNotEmpty() && permissionState.permissions[0].status !=
+                PermissionStatus.Granted) {
+                SettingsManager.getInstance(this@SettingsActivity).isAlertPushEnabled = false
+                SettingsManager.getInstance(this@SettingsActivity).isPrecipitationPushEnabled = false
+                SettingsManager.getInstance(this@SettingsActivity).isTodayForecastEnabled = false
+                SettingsManager.getInstance(this@SettingsActivity).isTomorrowForecastEnabled = false
+            }
         }
 
         NavHost(

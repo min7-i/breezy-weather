@@ -35,9 +35,11 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,9 +82,9 @@ fun PreferenceView(
     onClose: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
-    val paddingValues = if (onClose == null) {
+    val paddingValues = //if (onClose == null) {
         PaddingValues(vertical = 8.dp)
-    } else PaddingValues(bottom = 8.dp)
+    //} else PaddingValues(bottom = 8.dp)
     // TODO: Redundant
     if (card) {
         Material3CardListItem(
@@ -126,17 +128,21 @@ fun PreferenceView(
                         }
                         if (onClose != null) {
                             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.little_margin)))
-                            IconButton(
-                                onClick = {
-                                    onClose()
-                                },
-                                modifier = Modifier.clip(CircleShape)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = stringResource(R.string.action_close),
-                                    tint = DayNightTheme.colors.bodyColor
-                                )
+                            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                                IconButton(
+                                    onClick = {
+                                        onClose()
+                                    },
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .size(24.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = stringResource(R.string.action_close),
+                                        tint = DayNightTheme.colors.bodyColor
+                                    )
+                                }
                             }
                         }
                     }
@@ -144,9 +150,7 @@ fun PreferenceView(
                 supportingContent = if (!summary.isNullOrEmpty()) {
                     {
                         Column {
-                            if (onClose == null) { // We already have spacing from close button
-                                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.little_margin)))
-                            }
+                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.little_margin)))
                             Text(
                                 text = summary,
                                 color = DayNightTheme.colors.bodyColor,

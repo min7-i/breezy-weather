@@ -49,9 +49,15 @@
         <item name="colorPrecipitationProbability">@color/colorPrecipitationProbability</item>
         <item name="actionBarSize">@dimen/action_bar_height</item>
     </style>
+    <!--
+    <style name="BreezyWeatherTheme.Main" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="postSplashScreenTheme">@style/BreezyWeatherTheme</item>
+    </style>
+    -->
 
     <style name="BreezyWeatherTheme.Main" parent="BreezyWeatherTheme">
-        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowBackground">@color/colorSplashScreen</item>
         <item name="colorControlHighlight">@color/colorRipple_regular</item>
     </style>
 

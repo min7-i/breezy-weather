@@ -260,6 +260,10 @@ class InkPageIndicator @JvmOverloads constructor(
         setCurrentPageImmediate()
     }
 
+    private fun calculateTextSize(): Float {
+        return (mDotDiameter + mGap / 2) * 1.2F
+    }
+
     private fun setCurrentPageImmediate() {
         mCurrentPage = mSwitchView?.position ?: 0
         if (mDotCenterX.isNotEmpty() && (mMoveAnimation == null || !mMoveAnimation!!.isStarted)) {
@@ -310,7 +314,7 @@ class InkPageIndicator @JvmOverloads constructor(
     }
 
     private val desiredHeight: Int
-        get() = paddingTop + mDotDiameter + paddingBottom
+        get() = paddingBottom + if(mPageCount > 7) { calculateTextSize().toInt() } else mDotDiameter
     private val requiredWidth: Int
         get() = mPageCount * mDotDiameter + (mPageCount - 1) * mGap
     private val desiredWidth: Int
@@ -328,15 +332,14 @@ class InkPageIndicator @JvmOverloads constructor(
         if (mSwitchView == null || mPageCount == 0) return
         if (mPageCount > 7) {
             val cx = measuredWidth / 2
-            val cy = measuredHeight / 2
             mTextPaint.textAlign = Paint.Align.CENTER
-            mTextPaint.textSize = (mDotDiameter + mGap / 2).toFloat()
+            mTextPaint.textSize = calculateTextSize()
             val fontMetrics = mTextPaint.fontMetrics
-            val baseLineY = (cy - fontMetrics.top - fontMetrics.bottom).toInt()
+            val baseLineY = paddingTop - fontMetrics.top - fontMetrics.bottom
             canvas.drawText(
                 (mCurrentPage + 1).toString() + "/" + mPageCount,
                 cx.toFloat(),
-                baseLineY.toFloat(),
+                baseLineY,
                 mTextPaint
             )
             return

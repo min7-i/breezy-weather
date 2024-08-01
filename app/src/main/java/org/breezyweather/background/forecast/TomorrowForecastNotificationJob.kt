@@ -34,6 +34,8 @@ import org.breezyweather.common.extensions.isRunning
 import org.breezyweather.common.extensions.setForegroundSafely
 import org.breezyweather.common.extensions.workManager
 import org.breezyweather.common.utils.helpers.LogHelper
+import org.breezyweather.common.utils.helpers.PermissionsHelper
+import org.breezyweather.common.utils.helpers.SettingsHelper
 import org.breezyweather.remoteviews.Notifications
 import org.breezyweather.settings.SettingsManager
 import java.util.Calendar
@@ -103,7 +105,7 @@ class TomorrowForecastNotificationJob @AssistedInject constructor(
 
         fun setupTask(context: Context, nextDay: Boolean) {
             val settings = SettingsManager.getInstance(context)
-            if (settings.isTomorrowForecastEnabled) {
+            if (settings.isTomorrowForecastEnabled && PermissionsHelper.hasNotificationPermission(context)) {
                 val request = OneTimeWorkRequestBuilder<TomorrowForecastNotificationJob>()
                     .setInitialDelay(
                         getForecastAlarmDelayInMinutes(settings.tomorrowForecastTime, nextDay),
@@ -113,6 +115,9 @@ class TomorrowForecastNotificationJob @AssistedInject constructor(
                     .build()
                 context.workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, request)
             } else {
+                SettingsHelper.updateForecastNotificationSettings(
+                    context, currentValue = true, targetValue = false
+                )
                 context.workManager.cancelUniqueWork(TAG)
             }
         }

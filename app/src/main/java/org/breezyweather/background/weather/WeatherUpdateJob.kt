@@ -60,6 +60,7 @@ import org.breezyweather.common.extensions.withIOContext
 import org.breezyweather.common.extensions.workManager
 import org.breezyweather.common.source.LocationResult
 import org.breezyweather.common.source.WeatherResult
+import org.breezyweather.common.utils.helpers.PermissionsHelper
 import org.breezyweather.domain.location.model.getPlace
 import org.breezyweather.main.utils.RefreshErrorType
 import org.breezyweather.remoteviews.Notifications
@@ -126,7 +127,10 @@ class WeatherUpdateJob @AssistedInject constructor(
                 }
             } finally {
                 notifier.cancelProgressNotification()
-                if (BuildConfig.FLAVOR != "freenet" && SettingsManager.getInstance(context).isAppUpdateCheckEnabled) {
+                if (BuildConfig.FLAVOR != "freenet" &&
+                    SettingsManager.getInstance(context).isAppUpdateCheckEnabled &&
+                    PermissionsHelper.hasNotificationPermission(context)
+                ) {
                     try {
                         updateChecker.checkForUpdate(context, forceCheck = false)
                     } catch (e: Exception) {
@@ -299,7 +303,7 @@ class WeatherUpdateJob @AssistedInject constructor(
                 newUpdates.firstOrNull { it.first.formattedId == location.formattedId }
 
             // Send alert and precipitation for the first location
-            if (indexOfFirstLocation != null) {
+            if (indexOfFirstLocation != null && PermissionsHelper.hasNotificationPermission(context)) {
                 Notifications.checkAndSendAlert(applicationContext, location, locationsToUpdate.firstOrNull { it.formattedId == location.formattedId }?.weather)
                 Notifications.checkAndSendPrecipitation(applicationContext, location)
             }

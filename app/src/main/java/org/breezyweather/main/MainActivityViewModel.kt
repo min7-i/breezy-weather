@@ -39,6 +39,7 @@ import org.breezyweather.common.extensions.hasPermission
 import org.breezyweather.common.extensions.launchIO
 import org.breezyweather.common.source.RefreshError
 import org.breezyweather.common.utils.helpers.AsyncHelper
+import org.breezyweather.common.utils.helpers.PermissionsHelper
 import org.breezyweather.common.utils.helpers.SnackbarHelper
 import org.breezyweather.main.utils.RefreshErrorType
 import org.breezyweather.main.utils.StatementManager
@@ -294,7 +295,9 @@ class MainActivityViewModel @Inject constructor(
 
         _loading.value = true
 
-        if (BuildConfig.FLAVOR != "freenet" && SettingsManager.getInstance(getApplication()).isAppUpdateCheckEnabled) {
+        if (BuildConfig.FLAVOR != "freenet" &&
+            SettingsManager.getInstance(getApplication()).isAppUpdateCheckEnabled &&
+            PermissionsHelper.hasNotificationPermission(getApplication())) {
             viewModelScope.launchIO {
                 try {
                     updateChecker.checkForUpdate(getApplication(), forceCheck = false)

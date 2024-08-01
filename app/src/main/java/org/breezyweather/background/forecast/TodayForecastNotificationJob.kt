@@ -20,7 +20,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
-import androidx.core.content.PermissionChecker
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
@@ -34,10 +33,11 @@ import dagger.assisted.AssistedInject
 import org.breezyweather.common.extensions.cancelNotification
 import org.breezyweather.common.extensions.hasPermission
 import org.breezyweather.common.extensions.isRunning
-import org.breezyweather.common.extensions.notify
 import org.breezyweather.common.extensions.setForegroundSafely
 import org.breezyweather.common.extensions.workManager
 import org.breezyweather.common.utils.helpers.LogHelper
+import org.breezyweather.common.utils.helpers.PermissionsHelper
+import org.breezyweather.common.utils.helpers.SettingsHelper
 import org.breezyweather.remoteviews.Notifications
 import org.breezyweather.settings.SettingsManager
 import java.util.Calendar
@@ -107,7 +107,7 @@ class TodayForecastNotificationJob @AssistedInject constructor(
 
         fun setupTask(context: Context, nextDay: Boolean) {
             val settings = SettingsManager.getInstance(context)
-            if (settings.isTodayForecastEnabled && hasNotificationPermission(context)) {
+            if (settings.isTodayForecastEnabled && PermissionsHelper.hasNotificationPermission(context)) {
                 val request = OneTimeWorkRequestBuilder<TodayForecastNotificationJob>()
                     .setInitialDelay(
                         getForecastAlarmDelayInMinutes(settings.todayForecastTime, nextDay),
@@ -117,6 +117,9 @@ class TodayForecastNotificationJob @AssistedInject constructor(
                     .build()
                 context.workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, request)
             } else {
+                SettingsHelper.updateForecastNotificationSettings(
+                    context, currentValue = true, targetValue = false
+                )
                 context.workManager.cancelUniqueWork(TAG)
             }
         }

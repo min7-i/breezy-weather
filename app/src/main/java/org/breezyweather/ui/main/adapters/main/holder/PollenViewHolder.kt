@@ -108,6 +108,7 @@ class PollenViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
                 )[0]
         )
         mSubtitle.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorCaptionText))
+        mIndicator.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorCaptionText))
         mPager.adapter = DailyPollenPagerAdapter(
             location,
             (activity as MainActivity).sourceManager.getPollenIndexSource(

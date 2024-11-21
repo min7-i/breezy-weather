@@ -163,6 +163,7 @@
         <item name="android:textColor">?attr/colorBodyText</item>
     </style>
 
+    <!-- TODO: check usage of this style & contrast in dark theme -->
     <style name="subtitle_text" parent="TextAppearance.Material3.LabelMedium">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

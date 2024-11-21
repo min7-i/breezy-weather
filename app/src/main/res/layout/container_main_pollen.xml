@@ -23,6 +23,8 @@
                 android:layout_marginEnd="@dimen/normal_margin"
                 style="@style/title_text" />
 
+            <!-- TODO: for consistency both TextViews should use @style/content_text as do all other cards -->
+
             <TextView
                 android:id="@+id/container_main_pollen_subtitle"
                 android:text="@string/pollen_tap_to_see_more"
@@ -31,7 +33,7 @@
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginBottom="@dimen/normal_margin"
-                style="@style/subtitle_text"
+                style="@style/content_text"
                 tools:ignore="RtlHardcoded" />
 
             <TextView
@@ -39,7 +41,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="@dimen/normal_margin"
-                style="@style/subtitle_text"
+                style="@style/content_text"
                 tools:text="3/15" />
 
         </RelativeLayout>

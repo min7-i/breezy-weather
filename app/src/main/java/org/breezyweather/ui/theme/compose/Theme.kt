@@ -51,7 +51,7 @@ class BreezyWeatherColors {
 
         val DarkText = Color(0xff000000)
         val DarkText2nd = Color(0xff666666)
-        val GreyText = Color(0xFF6E6E6E) //Color(0xff4d4d4d) TODO: test 120 instead of 110
+        val GreyText = Color(0xFF878787) // TODO: check contrast
         val GreyText2nd = Color(0xffb2b2b2)
         val LightText = Color(0xffffffff)
         val LightText2nd = Color(0xff999999)
@@ -87,7 +87,7 @@ private val DayColors = BreezyWeatherDayNightColors(
 private val NightColors = BreezyWeatherDayNightColors(
     titleColor = BreezyWeatherColors.DarkTitleText,
     bodyColor = BreezyWeatherColors.DarkContentText,
-    captionColor = BreezyWeatherColors.DarkSubtitleText,
+    captionColor = BreezyWeatherColors.DarkSubtitleText, // TODO: check usage
     isDark = true
 )
 

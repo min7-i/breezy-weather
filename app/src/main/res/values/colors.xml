@@ -53,14 +53,14 @@
 
     <color name="colorTextDark">#000000</color>
     <color name="colorTextDark2nd">#666666</color>
-    <color name="colorTextGrey">#6E6E6E</color>
+    <color name="colorTextGrey">#878787</color>  <!-- TODO: check usage -->
     <color name="colorTextGrey2nd">#b2b2b2</color>
     <color name="colorTextLight">#ffffff</color>
     <color name="colorTextLight2nd">#999999</color>
 
-    <color name="colorTextTitle">#000000</color>
-    <color name="colorTextContent">#666666</color>
-    <color name="colorTextSubtitle">#b2b2b2</color>
+    <color name="colorTextTitle">@color/colorTextDark</color>
+    <color name="colorTextContent">@color/colorTextDark2nd</color>
+    <color name="colorTextSubtitle">@color/colorTextGrey2nd</color>
 
     <color name="colorMainCardBackground">#FDFCFF</color>
     <color name="colorPrecipitationProbability">@color/md_theme_primary</color>

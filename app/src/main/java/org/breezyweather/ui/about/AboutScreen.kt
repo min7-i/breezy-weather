@@ -301,7 +301,7 @@ private fun Header() {
         )
         Text(
             text = versionFormatted,
-            color = DayNightTheme.colors.captionColor,
+            color = MaterialTheme.colorScheme.onSurfaceVariant, // TODO: check color subtitleColor
             style = MaterialTheme.typography.labelMedium
         )
     }
@@ -312,7 +312,7 @@ private fun SectionTitle(title: String) {
     Text(
         text = title,
         modifier = Modifier.padding(dimensionResource(R.dimen.normal_margin)),
-        color = DayNightTheme.colors.captionColor,
+        color = MaterialTheme.colorScheme.onSurfaceVariant, // TODO: check color subtitleColor
         style = MaterialTheme.typography.labelMedium
     )
 }

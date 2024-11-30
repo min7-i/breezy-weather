@@ -132,7 +132,7 @@ class WeatherUpdateJob @AssistedInject constructor(
                 notifier.cancelProgressNotification()
                 if (BuildConfig.FLAVOR != "freenet" &&
                     SettingsManager.getInstance(context).isAppUpdateCheckEnabled &&
-                    context.hasNotificationPermission()
+                    context.hasNotificationPermission
                 ) {
                     try {
                         updateChecker.checkForUpdate(context, forceCheck = false)
@@ -339,7 +339,7 @@ class WeatherUpdateJob @AssistedInject constructor(
                 newUpdates.firstOrNull { it.first.formattedId == location.formattedId }
 
             // Send alert and precipitation for the first location
-            if (indexOfFirstLocation != null && context.hasNotificationPermission()) {
+            if (indexOfFirstLocation != null && context.hasNotificationPermission) {
                 Notifications.checkAndSendAlert(
                     applicationContext,
                     location,

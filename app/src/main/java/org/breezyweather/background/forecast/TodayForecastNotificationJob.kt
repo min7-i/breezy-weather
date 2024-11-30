@@ -33,7 +33,6 @@ import org.breezyweather.common.extensions.cancelNotification
 import org.breezyweather.common.extensions.hasNotificationPermission
 import org.breezyweather.common.extensions.isRunning
 import org.breezyweather.common.extensions.setForegroundSafely
-import org.breezyweather.common.extensions.updateForecastNotificationSettings
 import org.breezyweather.common.extensions.workManager
 import org.breezyweather.common.utils.helpers.LogHelper
 import org.breezyweather.remoteviews.Notifications
@@ -57,20 +56,22 @@ class TodayForecastNotificationJob @AssistedInject constructor(
         setForegroundSafely()
 
         return try {
-            val location = locationRepository.getFirstLocation(withParameters = false)
-            if (location != null) {
-                notifier.showComplete(
-                    location.copy(
-                        weather = weatherRepository.getWeatherByLocationId(
-                            location.formattedId,
-                            withDaily = true,
-                            withHourly = false,
-                            withMinutely = false,
-                            withAlerts = false
-                        )
-                    ),
-                    today = true
-                )
+            if (SettingsManager.getInstance(context).isTodayForecastEnabled) {
+                val location = locationRepository.getFirstLocation(withParameters = false)
+                if (location != null) {
+                    notifier.showComplete(
+                        location.copy(
+                            weather = weatherRepository.getWeatherByLocationId(
+                                location.formattedId,
+                                withDaily = true,
+                                withHourly = false,
+                                withMinutely = false,
+                                withAlerts = false
+                            )
+                        ),
+                        today = true
+                    )
+                }
             }
             Result.success()
         } catch (e: Exception) {
@@ -105,19 +106,22 @@ class TodayForecastNotificationJob @AssistedInject constructor(
 
         fun setupTask(context: Context, nextDay: Boolean) {
             val settings = SettingsManager.getInstance(context)
-            if (settings.isTodayForecastEnabled && context.hasNotificationPermission()) {
-                val request = OneTimeWorkRequestBuilder<TodayForecastNotificationJob>()
-                    .setInitialDelay(
-                        getForecastAlarmDelayInMinutes(settings.todayForecastTime, nextDay),
-                        TimeUnit.MINUTES
-                    )
-                    .addTag(TAG)
-                    .build()
-                context.workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, request)
-            } else {
-                context.updateForecastNotificationSettings(false)
-                context.workManager.cancelUniqueWork(TAG)
+            if (settings.isTodayForecastEnabled) {
+                if (context.hasNotificationPermission) {
+                    val request = OneTimeWorkRequestBuilder<TodayForecastNotificationJob>()
+                        .setInitialDelay(
+                            getForecastAlarmDelayInMinutes(settings.todayForecastTime, nextDay),
+                            TimeUnit.MINUTES
+                        )
+                        .addTag(TAG)
+                        .build()
+                    context.workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, request)
+                    return
+                } else {
+                    settings.isTodayForecastEnabled = false
+                }
             }
+            context.workManager.cancelUniqueWork(TAG)
         }
 
         fun stop(context: Context) {

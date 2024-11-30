@@ -16,34 +16,21 @@
 
 package org.breezyweather.settings.compose
 
-import android.Manifest
 import android.content.Context
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import org.breezyweather.BuildConfig
 import org.breezyweather.R
 import org.breezyweather.background.forecast.TodayForecastNotificationJob
 import org.breezyweather.background.forecast.TomorrowForecastNotificationJob
 import org.breezyweather.common.basic.models.options.UpdateInterval
-import org.breezyweather.common.extensions.updateForecastNotificationSettings
+import org.breezyweather.common.ui.composables.AnimatedVisibilitySlideVertically
 import org.breezyweather.common.ui.widgets.Material3Scaffold
 import org.breezyweather.common.ui.widgets.generateCollapsedScrollBehavior
 import org.breezyweather.common.ui.widgets.insets.FitStatusBarTopAppBar
-import org.breezyweather.common.utils.helpers.IntentHelper
 import org.breezyweather.settings.SettingsManager
 import org.breezyweather.settings.preference.bottomInsetItem
 import org.breezyweather.settings.preference.composables.PreferenceScreen
@@ -60,31 +47,12 @@ import org.breezyweather.settings.preference.timePickerPreferenceItem
 fun NotificationsSettingsScreen(
     context: Context,
     onNavigateBack: () -> Unit,
+    hasNotificationPermission: Boolean,
+    postNotificationPermissionEnsurer: (succeedCallback: () -> Unit) -> Unit,
     todayForecastEnabled: Boolean,
     tomorrowForecastEnabled: Boolean,
 ) {
     val scrollBehavior = generateCollapsedScrollBehavior()
-
-    val permissionState = rememberMultiplePermissionsState(
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            listOf(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            // permission not needed
-            emptyList()
-        }
-    )
-
-    val hasNotificationPermission = permissionState.permissions[0].status == PermissionStatus.Granted
-
-    // Set notifications to disabled when notification permission is not granted. This prevents
-    // jobs from trying to still post a notification due to enabled settings.
-    LaunchedEffect(permissionState) {
-        if (permissionState.permissions.isNotEmpty() &&
-            permissionState.permissions[0].status != PermissionStatus.Granted
-        ) {
-            context.updateForecastNotificationSettings(false)
-        }
-    }
 
     Material3Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -100,26 +68,15 @@ fun NotificationsSettingsScreen(
         PreferenceScreen(paddingValues = paddings) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 listPreferenceItem(R.string.settings_notifications_permission) { title ->
-                    AnimatedVisibility(
-                        visible = !hasNotificationPermission,
-                        enter = fadeIn() + expandVertically(
-                            expandFrom = Alignment.Top
-                        ) + slideInVertically(),
-                        exit = slideOutVertically(
-                            targetOffsetY = { -it / 2 }
-                        ) + shrinkVertically(
-                            shrinkTowards = Alignment.Top
-                        ) + fadeOut(),
-                        label = ""
+                    AnimatedVisibilitySlideVertically(
+                        visible = !hasNotificationPermission
                     ) {
                         PreferenceView(
                             iconId = R.drawable.ic_about,
                             title = stringResource(title),
-                            summary = stringResource(R.string.settings_notifications_permission_summary),
+                            summary = stringResource(R.string.settings_notifications_permission_summary, R.string.action_grant_permission),
                             onClick = {
-                                // The permission request dialog is not always shown again when the permission was
-                                // denied before. Better open notification settings instead.
-                                IntentHelper.startNotificationSettingsActivity(context)
+                                postNotificationPermissionEnsurer { /* no callback */ }
                             }
                         )
                     }
@@ -132,8 +89,7 @@ fun NotificationsSettingsScreen(
                         titleId = id,
                         summaryOnId = R.string.settings_enabled,
                         summaryOffId = R.string.settings_disabled,
-                        checked = SettingsManager.getInstance(context).isAppUpdateCheckEnabled &&
-                            hasNotificationPermission,
+                        checked = SettingsManager.getInstance(context).isAppUpdateCheckEnabled,
                         enabled = hasNotificationPermission,
                         onValueChanged = {
                             SettingsManager.getInstance(context).isAppUpdateCheckEnabled = it
@@ -149,16 +105,14 @@ fun NotificationsSettingsScreen(
                     titleId = id,
                     summaryOnId = R.string.settings_enabled,
                     summaryOffId = if (SettingsManager.getInstance(context).updateInterval !=
-                        UpdateInterval.INTERVAL_NEVER ||
-                        !hasNotificationPermission
+                        UpdateInterval.INTERVAL_NEVER
                     ) {
                         R.string.settings_disabled
                     } else {
                         R.string.settings_unavailable_no_background_updates
                     },
                     checked = SettingsManager.getInstance(context).isAlertPushEnabled &&
-                        SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER &&
-                        hasNotificationPermission,
+                        SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER,
                     enabled = SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER &&
                         hasNotificationPermission,
                     onValueChanged = {
@@ -171,16 +125,14 @@ fun NotificationsSettingsScreen(
                     titleId = id,
                     summaryOnId = R.string.settings_enabled,
                     summaryOffId = if (SettingsManager.getInstance(context).updateInterval !=
-                        UpdateInterval.INTERVAL_NEVER ||
-                        !hasNotificationPermission
+                        UpdateInterval.INTERVAL_NEVER
                     ) {
                         R.string.settings_disabled
                     } else {
                         R.string.settings_unavailable_no_background_updates
                     },
                     checked = SettingsManager.getInstance(context).isPrecipitationPushEnabled &&
-                        SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER &&
-                        hasNotificationPermission,
+                        SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER,
                     enabled = SettingsManager.getInstance(context).updateInterval != UpdateInterval.INTERVAL_NEVER &&
                         hasNotificationPermission,
                     onValueChanged = {
@@ -198,6 +150,7 @@ fun NotificationsSettingsScreen(
                     summaryOnId = R.string.settings_enabled,
                     summaryOffId = R.string.settings_disabled,
                     checked = todayForecastEnabled,
+                    withState = false,
                     enabled = hasNotificationPermission,
                     onValueChanged = {
                         SettingsManager.getInstance(context).isTodayForecastEnabled = it
@@ -222,6 +175,7 @@ fun NotificationsSettingsScreen(
                     summaryOnId = R.string.settings_enabled,
                     summaryOffId = R.string.settings_disabled,
                     checked = tomorrowForecastEnabled,
+                    withState = false,
                     enabled = hasNotificationPermission,
                     onValueChanged = {
                         SettingsManager.getInstance(context).isTomorrowForecastEnabled = it

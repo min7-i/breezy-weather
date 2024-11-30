@@ -315,7 +315,7 @@ class MainActivityViewModel @Inject constructor(
 
         if (BuildConfig.FLAVOR != "freenet" &&
             SettingsManager.getInstance(getApplication()).isAppUpdateCheckEnabled &&
-            (getApplication() as Context).hasNotificationPermission()
+            (getApplication() as Context).hasNotificationPermission
         ) {
             viewModelScope.launchIO {
                 try {

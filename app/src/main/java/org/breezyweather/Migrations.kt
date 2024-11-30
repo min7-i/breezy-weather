@@ -16,6 +16,8 @@
 
 package org.breezyweather
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import org.breezyweather.background.forecast.TodayForecastNotificationJob
 import org.breezyweather.background.forecast.TomorrowForecastNotificationJob
@@ -23,6 +25,7 @@ import org.breezyweather.background.weather.WeatherUpdateJob
 import org.breezyweather.common.basic.models.options.appearance.CardDisplay
 import org.breezyweather.common.basic.models.options.appearance.DailyTrendDisplay
 import org.breezyweather.common.basic.models.options.appearance.HourlyTrendDisplay
+import org.breezyweather.main.utils.StatementManager
 import org.breezyweather.settings.SettingsManager
 import java.io.File
 
@@ -33,11 +36,21 @@ object Migrations {
      *
      * @return true if a migration is performed, false otherwise.
      */
+    @SuppressLint("InlinedApi")
     fun upgrade(context: Context): Boolean {
         val lastVersionCode = SettingsManager.getInstance(context).lastVersionCode
         val oldVersion = lastVersionCode
         if (oldVersion < BuildConfig.VERSION_CODE) {
             if (oldVersion > 0) { // Not fresh install
+                if (oldVersion < 50400) {
+                    try {
+                        // We cannot determine if the permission was permanently denied in the past. That is why we
+                        // need to update the state for all users updating from an older version.
+                        StatementManager(context).setPermissionDenied(Manifest.permission.POST_NOTIFICATIONS)
+                    } catch (ignored: Throwable) {
+                        // ignored
+                    }
+                }
                 if (oldVersion < 50000) {
                     // V5.0.0 adds many new charts
                     // Adding it to people who customized their hourly trends tabs so they don't miss

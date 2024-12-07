@@ -96,6 +96,7 @@ fun Date.getFormattedDate(
             timeZone = location?.timeZone?.let { TimeZone.getTimeZone(it) } ?: TimeZone.getDefault()
         }.format(this)
     } else {
+        @Suppress("DEPRECATION")
         this.getFormattedDate(pattern, location?.javaTimeZone, locale)
     }
 }

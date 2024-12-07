@@ -110,6 +110,7 @@ fun Context.getTypefaceFromTextAppearance(
     return TextAppearance(this, textAppearanceId).getFont(this)
 }
 
+@Suppress("DEPRECATION")
 fun Window.setSystemBarStyle(
     statusShaderP: Boolean,
     lightStatusP: Boolean,

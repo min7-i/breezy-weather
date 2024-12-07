@@ -166,10 +166,7 @@ class NumberAnimTextView @JvmOverloads constructor(
             val s = if (s1.size > s2.size) s1 else s2
             if (s.size > 1) {
                 // 小数部分
-                val decimals = s[1]
-                if (decimals != null) {
-                    length = decimals.length
-                }
+                length = s[1].length
             }
             pattern.append("#,##0")
             if (length > 0) {

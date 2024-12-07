@@ -78,7 +78,7 @@ fun Context.dpToPx(dp: Float): Float {
 }
 
 fun Context.spToPx(sp: Int): Float {
-    return sp * this.resources.displayMetrics.scaledDensity
+    return sp * this.resources.displayMetrics.scaledDensity // TODO: replace deprecated method
 }
 
 fun Context.pxToDp(@Px px: Int): Float {

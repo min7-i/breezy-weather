@@ -20,6 +20,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
 import androidx.annotation.AttrRes
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -133,6 +135,14 @@ class MainThemeColorProvider(
                 else -> !context.isDarkMode
             }
         }
+
+        @Composable
+        fun shouldUseLightTheme(
+            context: Context,
+            location: Location?
+        ): Boolean = if (SettingsManager.getInstance(context).dayNightModeForLocations) {
+            isLightTheme(context, location)
+        } else !isSystemInDarkTheme()
 
         fun getContext(
             lightTheme: Boolean,

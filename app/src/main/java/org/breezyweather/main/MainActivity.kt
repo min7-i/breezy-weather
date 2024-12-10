@@ -24,6 +24,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -93,6 +94,7 @@ import org.breezyweather.main.utils.MainThemeColorProvider
 import org.breezyweather.main.utils.RefreshErrorType
 import org.breezyweather.search.SearchActivity
 import org.breezyweather.settings.SettingsChangedMessage
+import org.breezyweather.settings.SettingsManager
 import org.breezyweather.sources.SourceManager
 import org.breezyweather.theme.compose.BreezyWeatherTheme
 import org.breezyweather.theme.compose.DayNightTheme
@@ -211,11 +213,27 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             v: View,
             savedInstanceState: Bundle?,
         ) {
-            updateSystemBarStyle()
+            //Log.d("bwDebug", "fragment created $f")
+            if (f.tag == TAG_FRAGMENT_MANAGEMENT) {
+                Log.d("bwDebug", "fragment created $f false")
+                viewModel.checkLocationTheme(false)
+                updateSystemBarStyle()
+            } else if (f.tag == TAG_FRAGMENT_HOME) {
+                Log.d("bwDebug", "fragment created $f true")
+                viewModel.checkLocationTheme(true)
+                updateSystemBarStyle()
+            }
+            //updateSystemBarStyle()
         }
 
         override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
-            updateSystemBarStyle()
+            //Log.d("bwDebug", "fragment destroyed $f")
+            if (f.tag == TAG_FRAGMENT_MANAGEMENT) {
+                Log.d("bwDebug", "fragment destroyed $f true")
+                viewModel.checkLocationTheme(true)
+                updateSystemBarStyle()
+            }
+            //updateSystemBarStyle()
         }
     }
 
@@ -245,8 +263,14 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             .with(Location::class.java)
             .observeForever(backgroundUpdateObserver) // Only comes from WeatherUpdateJob
         EventBus.instance.with(SettingsChangedMessage::class.java).observe(this) {
+            Log.d("bwDebug", "settings changed")
             // Force refresh but with latest location used
             viewModel.init(viewModel.currentLocation.value?.location?.formattedId)
+
+            val useDayNightModeForLocation = SettingsManager.getInstance(this).dayNightModeForLocations
+            if (viewModel.checkLocationBasedLightTheme.value != useDayNightModeForLocation) {
+                viewModel.checkLocationTheme(useDayNightModeForLocation)
+            }
 
             findHomeFragment()?.updateViews()
 
@@ -455,8 +479,9 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             }
         }
 
-        initPerLocationSettingsView()
+        //initPerLocationSettingsView()
 
+        /*
         binding.refreshErrorDialog.setContent {
             val isLightTheme = isLocationBasedLightTheme.collectAsState()
 
@@ -465,17 +490,21 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             ) {
                 RefreshErrorDetails()
             }
-        }
-    }
+        }*/
 
-    private fun initPerLocationSettingsView() {
         binding.perLocationSettings.setContent {
             val validLocation = viewModel.currentLocation.collectAsState()
+            val checkLocationTheme = viewModel.checkLocationBasedLightTheme.collectAsState()
+            val isLightTheme = MainThemeColorProvider.shouldUseLightTheme(
+                this,
+                if (checkLocationTheme.value) validLocation.value?.location else null
+            )
 
             BreezyWeatherTheme(
-                lightTheme = MainThemeColorProvider.isLightTheme(this, validLocation.value?.daylight)
+                lightTheme = isLightTheme
             ) {
                 PerLocationSettingsDialog(location = validLocation.value?.location)
+                RefreshErrorDetails()
             }
         }
     }
@@ -879,7 +908,7 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
     // main fragment callback.
     override fun onEditIconClicked() {
         _dialogPerLocationSettingsOpen.value = true
-        initPerLocationSettingsView()
+        //initPerLocationSettingsView()
     }
 
     override fun onManageIconClicked() {

@@ -21,6 +21,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import breezyweather.data.location.LocationRepository
@@ -80,6 +81,9 @@ class MainActivityViewModel @Inject constructor(
 
     private val _selectedLocation: MutableStateFlow<Location?> = MutableStateFlow(null)
     val selectedLocation = _selectedLocation.asStateFlow()
+
+    private val _checkLocationBasedLightTheme = MutableStateFlow(false)
+    val checkLocationBasedLightTheme = _checkLocationBasedLightTheme.asStateFlow()
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
@@ -154,6 +158,10 @@ class MainActivityViewModel @Inject constructor(
 
     fun setRefreshErrorDetailsDialogVisible(visible: Boolean) {
         _dialogRefreshErrorDetails.value = visible
+    }
+
+    fun checkLocationTheme(boolean: Boolean) {
+        _checkLocationBasedLightTheme.value = boolean
     }
 
     private fun updateInnerData(newValid: List<Location>) {

@@ -213,7 +213,6 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             v: View,
             savedInstanceState: Bundle?,
         ) {
-            //Log.d("bwDebug", "fragment created $f")
             if (f.tag == TAG_FRAGMENT_MANAGEMENT) {
                 Log.d("bwDebug", "fragment created $f false")
                 viewModel.checkLocationTheme(false)
@@ -227,9 +226,8 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
         }
 
         override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
-            //Log.d("bwDebug", "fragment destroyed $f")
             if (f.tag == TAG_FRAGMENT_MANAGEMENT) {
-                Log.d("bwDebug", "fragment destroyed $f true")
+                Log.d("bwDebug", "fragment destroyed $f true orientation ${this@MainActivity.getResources().configuration.orientation}")
                 viewModel.checkLocationTheme(true)
                 updateSystemBarStyle()
             }
@@ -268,7 +266,7 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             viewModel.init(viewModel.currentLocation.value?.location?.formattedId)
 
             val useDayNightModeForLocation = SettingsManager.getInstance(this).dayNightModeForLocations
-            if (viewModel.checkLocationBasedLightTheme.value != useDayNightModeForLocation) {
+            if (viewModel.checkLocationBasedTheme.value != useDayNightModeForLocation) {
                 viewModel.checkLocationTheme(useDayNightModeForLocation)
             }
 
@@ -494,7 +492,7 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
 
         binding.perLocationSettings.setContent {
             val validLocation = viewModel.currentLocation.collectAsState()
-            val checkLocationTheme = viewModel.checkLocationBasedLightTheme.collectAsState()
+            val checkLocationTheme = viewModel.checkLocationBasedTheme.collectAsState()
             val isLightTheme = MainThemeColorProvider.shouldUseLightTheme(
                 this,
                 if (checkLocationTheme.value) validLocation.value?.location else null
@@ -810,13 +808,16 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
 
     private fun updateSystemBarStyle() {
         if (binding.drawerLayout != null) {
+            Log.d("bwDebug", "drawer")
             findHomeFragment()?.setSystemBarStyle()
             return
         }
 
         if (isOrWillManagementFragmentVisible) {
+            Log.d("bwDebug", "mgmt isMgmtVisible $isManagementFragmentVisible")
             findManagementFragment()?.setSystemBarStyle()
         } else {
+            Log.d("bwDebug", "home")
             findHomeFragment()?.setSystemBarStyle()
         }
     }

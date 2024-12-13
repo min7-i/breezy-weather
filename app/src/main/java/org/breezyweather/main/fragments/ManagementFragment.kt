@@ -20,6 +20,7 @@ import android.Manifest
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,6 +104,7 @@ class PushedManagementFragment : ManagementFragment() {
     }
 
     override fun setSystemBarStyle() {
+        Log.d("bwDebug", "mgmt sysBar")
         ThemeManager
             .getInstance(requireContext())
             .weatherThemeDelegate

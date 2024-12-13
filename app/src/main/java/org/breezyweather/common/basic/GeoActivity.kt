@@ -19,6 +19,7 @@ package org.breezyweather.common.basic
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
@@ -37,6 +38,7 @@ abstract class GeoActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            Log.d("bwDebug", "GeoActivity")
             window.setSystemBarStyle(
                 statusShaderP = false,
                 lightStatusP = !this.isDarkMode,

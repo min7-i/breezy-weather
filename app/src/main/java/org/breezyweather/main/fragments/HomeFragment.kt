@@ -23,6 +23,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -149,6 +150,7 @@ class HomeFragment : MainModuleFragment() {
     }
 
     override fun setSystemBarStyle() {
+        Log.d("bwDebug", "home sysBar")
         ThemeManager
             .getInstance(requireContext())
             .weatherThemeDelegate
@@ -164,7 +166,7 @@ class HomeFragment : MainModuleFragment() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        updateDayNightColors()
+        //updateDayNightColors()
         updateViews()
     }
 
@@ -229,6 +231,9 @@ class HomeFragment : MainModuleFragment() {
 
         binding.refreshLayout.doOnApplyWindowInsets { _, insets ->
             binding.refreshLayout.fitSystemBar(insets.top)
+            // TODO: double-check; call setSystemBarStyle once views are attached to get correct insets for navBar
+            setSystemBarStyle()
+            Log.d("bwDebug", "binding refreshLayout set sysBar")
         }
         binding.refreshLayout.setOnRefreshListener {
             viewModel.updateWithUpdatingChecking(
@@ -551,13 +556,11 @@ class HomeFragment : MainModuleFragment() {
             }
 
             // set system bar style.
-            mTopChanged = if (mFirstCardMarginTop <= 0) {
-                (binding.appBar.translationY != 0f) != (mLastAppBarTranslationY != 0f)
-            } else {
-                true
-            }
+            mTopChanged = mLastAppBarTranslationY != 0f && binding.appBar.translationY == 0f ||
+                mLastAppBarTranslationY == 0f && binding.appBar.translationY != 0f
             topOverlap = binding.appBar.translationY != 0f
             if (mTopChanged!!) {
+                Log.d("bwDebug", "top changed")
                 checkToSetSystemBarStyle()
             }
         }

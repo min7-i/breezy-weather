@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.SettingNotFoundException
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.DecelerateInterpolator
@@ -125,7 +126,7 @@ fun Window.setSystemBarStyle(
         // Use default dark and light platform colors from EdgeToEdge
         val colorSystemBarDark = Color.argb(0x80, 0x1b, 0x1b, 0x1b)
         val colorSystemBarLight = Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
-
+        Log.d("bwDebug", "displayExt lightStatus $lightStatus statusShader $statusShader lightNav $lightNavigation navShader $navigationShader")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             // Always apply a dark shader as a light or transparent status bar is not supported
             lightStatus = false

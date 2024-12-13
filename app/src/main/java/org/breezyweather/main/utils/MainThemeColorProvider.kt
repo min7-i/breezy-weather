@@ -139,7 +139,7 @@ class MainThemeColorProvider(
         @Composable
         fun shouldUseLightTheme(
             context: Context,
-            location: Location?
+            location: Location? // TODO: use daylight instead?
         ): Boolean = if (SettingsManager.getInstance(context).dayNightModeForLocations) {
             isLightTheme(context, location)
         } else !isSystemInDarkTheme()

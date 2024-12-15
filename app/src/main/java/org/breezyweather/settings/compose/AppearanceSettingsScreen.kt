@@ -109,11 +109,12 @@ fun AppearanceSettingsScreen(
                             .getInstance(context)
                             .darkMode = DarkMode.getInstance(it)
 
-                        AsyncHelper.delayRunOnUI({
+                        // TODO: is there a reason to delay this step?
+                        //AsyncHelper.delayRunOnUI({
                             ThemeManager
                                 .getInstance(context)
                                 .update(darkMode = SettingsManager.getInstance(context).darkMode)
-                        }, 300)
+                        //}, 300)
                     }
                 )
             }

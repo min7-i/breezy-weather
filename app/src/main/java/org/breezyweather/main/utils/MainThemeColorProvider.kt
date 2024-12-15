@@ -142,7 +142,7 @@ class MainThemeColorProvider(
             location: Location? // TODO: use daylight instead?
         ): Boolean = if (SettingsManager.getInstance(context).dayNightModeForLocations) {
             isLightTheme(context, location)
-        } else !isSystemInDarkTheme()
+        } else !isSystemInDarkTheme() // TODO: fix for older devices (A9) => changing the app theme has no effect on main dialogs; only after a restart (removing uiMode from config changes resolves this)
 
         fun getContext(
             lightTheme: Boolean,

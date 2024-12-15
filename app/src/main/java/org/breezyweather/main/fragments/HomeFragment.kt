@@ -91,7 +91,7 @@ class HomeFragment : MainModuleFragment() {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
 
         initModel()
-
+        Log.d("bwDebug", "home fragment onCreateView")
         // attach weather view.
         weatherView = ThemeManager
             .getInstance(requireContext())
@@ -167,6 +167,8 @@ class HomeFragment : MainModuleFragment() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         //updateDayNightColors()
+        Log.d("bwDebugConfig", "onConfig $newConfig")
+        // TODO: check if this is still needed
         updateViews()
     }
 
@@ -178,6 +180,7 @@ class HomeFragment : MainModuleFragment() {
 
     @SuppressLint("ClickableViewAccessibility", "NonConstantResourceId", "NotifyDataSetChanged")
     private fun initView() {
+        Log.d("bwDebug", "home fragment initView")
         ensureResourceProvider()
 
         weatherView.setGravitySensorEnabled(
@@ -231,9 +234,6 @@ class HomeFragment : MainModuleFragment() {
 
         binding.refreshLayout.doOnApplyWindowInsets { _, insets ->
             binding.refreshLayout.fitSystemBar(insets.top)
-            // TODO: double-check; call setSystemBarStyle once views are attached to get correct insets for navBar
-            setSystemBarStyle()
-            Log.d("bwDebug", "binding refreshLayout set sysBar")
         }
         binding.refreshLayout.setOnRefreshListener {
             viewModel.updateWithUpdatingChecking(
@@ -310,12 +310,30 @@ class HomeFragment : MainModuleFragment() {
             }
         }
 
+        if (isAdded && context != null) {
+            updatePreviewSubviews()
+        }/*
         previewOffset.observe(viewLifecycleOwner) {
             binding.root.post {
                 if (isFragmentViewCreated) {
                     updatePreviewSubviews()
                 }
             }
+        }*/
+
+        binding.root.post { // TODO: check if post is necessary; also check if this could be a replacement for calling it in main fragment created => if yes, add this in mgmt fragment, too
+            if (isFragmentViewCreated) {
+                Log.d("bwDebug", "view created")
+                checkToSetSystemBarStyle()
+            }
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            //Log.d("bwDebug", "home fragment update system bar style insets listener")
+            // TODO: search for alternative solution; this is triggered multiple times and also when switching to mgmt fragment
+            // solution needs to set system bar style after root window is attached so the correct insets for nav bars can be determined
+            //checkToSetSystemBarStyle()
+            insets
         }
     }
 

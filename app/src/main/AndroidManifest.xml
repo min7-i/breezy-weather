@@ -98,7 +98,6 @@
             android:name=".main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/BreezyWeatherTheme.Main"
-            android:configChanges="uiMode"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -145,6 +145,7 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
         initModel()
         initView()
         setCallback(requireActivity() as Callback)
+        Log.d("bwDebug", "mgmt fragment onCreateView")
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -404,6 +405,9 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+
+        // TODO: check if this is still needed
+        Log.d("bwDebugConfig", "onConfig $newConfig")
         val firstHolderPosition = layout.findFirstVisibleItemPosition()
         adapter.notifyItemRangeChanged(
             firstHolderPosition,

@@ -45,14 +45,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.IntentCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -294,6 +297,9 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+
+        Log.d("bwDebugConfig", "onConfig $newConfig")
+        // TODO: check if this is still needed
         updateSystemBarStyle()
         updateDayNightColors()
     }
@@ -362,6 +368,7 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
         binding.root.post {
             if (isActivityCreated) {
                 updateDayNightColors()
+                // TODO: add setSystemBarStyle?
             }
         }
 
@@ -477,6 +484,12 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             }
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            Log.d("bwDebug", "update system bar style insets listener")
+            updateSystemBarStyle()
+            insets
+        }
+
         //initPerLocationSettingsView()
 
         /*
@@ -490,19 +503,22 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
             }
         }*/
 
-        binding.perLocationSettings.setContent {
-            val validLocation = viewModel.currentLocation.collectAsState()
-            val checkLocationTheme = viewModel.checkLocationBasedTheme.collectAsState()
-            val isLightTheme = MainThemeColorProvider.shouldUseLightTheme(
-                this,
-                if (checkLocationTheme.value) validLocation.value?.location else null
-            )
+        binding.perLocationSettings.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+            setContent {
+                val validLocation = viewModel.currentLocation.collectAsState()
+                val checkLocationTheme = viewModel.checkLocationBasedTheme.collectAsState()
+                val isLightTheme = MainThemeColorProvider.shouldUseLightTheme(
+                    this@MainActivity,
+                    if (checkLocationTheme.value) validLocation.value?.location else null
+                )
 
-            BreezyWeatherTheme(
-                lightTheme = isLightTheme
-            ) {
-                PerLocationSettingsDialog(location = validLocation.value?.location)
-                RefreshErrorDetails()
+                BreezyWeatherTheme(
+                    lightTheme = isLightTheme
+                ) {
+                    PerLocationSettingsDialog(location = validLocation.value?.location)
+                    RefreshErrorDetails()
+                }
             }
         }
     }
@@ -806,6 +822,7 @@ class MainActivity : GeoActivity(), HomeFragment.Callback, ManagementFragment.Ca
         }
     }
 
+    // TODO: check if this is also called in onStart/onResume (home frag seems to have a transparent navBar again
     private fun updateSystemBarStyle() {
         if (binding.drawerLayout != null) {
             Log.d("bwDebug", "drawer")

@@ -20,6 +20,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,6 +36,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -411,7 +413,7 @@ class AboutActivity : GeoActivity() {
         val scrollBehavior = generateCollapsedScrollBehavior()
 
         val scope = rememberCoroutineScope()
-        var isCheckingUpdates = remember { mutableStateOf(false) }
+        val isCheckingUpdates = remember { mutableStateOf(false) }
 
         val uriHandler = LocalUriHandler.current
         val linkToOpen = remember { mutableStateOf("") }
@@ -462,7 +464,31 @@ class AboutActivity : GeoActivity() {
                 item {
                     Header()
                     AboutAppLink(
-                        iconId = R.drawable.ic_sync, // TODO: Replace with a circular progress indicator
+                        icon = {
+                            // Use crossfade animation to prevent the progress indicator from flickering when repeatedly
+                            // pressing the update card as this causes the loading state to change back and forth almost
+                            // instantly.
+                            Crossfade(
+                                targetState = isCheckingUpdates.value,
+                                label = ""
+                            ) { loading ->
+                                when (loading) {
+                                    false -> {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_sync),
+                                            contentDescription = null,
+                                            tint = DayNightTheme.colors.titleColor
+                                        )
+                                    }
+                                    true -> {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(24.dp),
+                                            color = DayNightTheme.colors.titleColor
+                                        )
+                                    }
+                                }
+                            }
+                        },
                         title = stringResource(R.string.about_check_for_app_updates),
                         onClick = {
                             if (BuildConfig.FLAVOR == "freenet") {
@@ -503,12 +529,12 @@ class AboutActivity : GeoActivity() {
                                                         )
                                                     }
                                                     /*is GetApplicationRelease.Result.OsTooOld -> {
-                                                        SnackbarHelper.showSnackbar(
-                                                            this@AboutActivity.getString(
-                                                                R.string.about_update_check_eol
-                                                            )
+                                                    SnackbarHelper.showSnackbar(
+                                                        this@AboutActivity.getString(
+                                                            R.string.about_update_check_eol
                                                         )
-                                                    }*/
+                                                    )
+                                                }*/
                                                     else -> {}
                                                 }
                                             } catch (e: Exception) {
@@ -641,6 +667,25 @@ class AboutActivity : GeoActivity() {
         title: String,
         onClick: () -> Unit,
     ) {
+        AboutAppLink(
+            icon = {
+                Icon(
+                    painter = painterResource(iconId),
+                    contentDescription = null,
+                    tint = DayNightTheme.colors.titleColor
+                )
+            },
+            title = title,
+            onClick = onClick
+        )
+    }
+
+    @Composable
+    private fun AboutAppLink(
+        icon: @Composable () -> Unit,
+        title: String,
+        onClick: () -> Unit,
+    ) {
         Material3CardListItem {
             Row(
                 modifier = Modifier
@@ -653,11 +698,7 @@ class AboutActivity : GeoActivity() {
                     .padding(dimensionResource(R.dimen.normal_margin)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(iconId),
-                    contentDescription = null,
-                    tint = DayNightTheme.colors.titleColor
-                )
+                icon()
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.normal_margin)))
                 Text(
                     text = title,

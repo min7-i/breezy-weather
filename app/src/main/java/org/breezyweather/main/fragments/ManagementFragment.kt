@@ -84,11 +84,14 @@ import org.breezyweather.common.ui.composables.SecondarySourcesPreference
 import org.breezyweather.common.ui.decorations.Material3ListItemDecoration
 import org.breezyweather.common.ui.widgets.Material3Scaffold
 import org.breezyweather.common.ui.widgets.insets.BWCenterAlignedTopAppBar
+import org.breezyweather.common.utils.helpers.IntentHelper
+import org.breezyweather.common.utils.helpers.PermissionHelper
 import org.breezyweather.common.utils.helpers.SnackbarHelper
 import org.breezyweather.main.MainActivity
 import org.breezyweather.main.MainActivityViewModel
 import org.breezyweather.main.adapters.LocationAdapterAnimWrapper
 import org.breezyweather.main.adapters.location.LocationAdapter
+import org.breezyweather.main.utils.StatementManager
 import org.breezyweather.main.widgets.LocationItemTouchCallback
 import org.breezyweather.main.widgets.LocationItemTouchCallback.TouchReactor
 import org.breezyweather.settings.SettingsManager
@@ -207,8 +210,6 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
                             )
                         }
                     }
-                } else {
-                    null
                 }
             }
         ) { paddings ->
@@ -236,9 +237,14 @@ open class ManagementFragment : MainModuleFragment(), TouchReactor {
                                 onClick = {
                                     viewModel.statementManager.setPostNotificationDialogAlreadyShown()
                                     notificationDismissed = true
-                                    requireActivity().requestPermissions(
-                                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                                        0
+
+                                    PermissionHelper.requestPermissionWithFallback(
+                                        activity = requireActivity(),
+                                        permission = Manifest.permission.POST_NOTIFICATIONS,
+                                        statementManager = StatementManager(requireContext()),
+                                        requestPermissionFallback = {
+                                            IntentHelper.startNotificationSettingsActivity(requireActivity())
+                                        },
                                     )
                                 },
                                 onClose = {

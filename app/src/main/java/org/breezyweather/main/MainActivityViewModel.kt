@@ -35,6 +35,7 @@ import org.breezyweather.R
 import org.breezyweather.background.updater.AppUpdateChecker
 import org.breezyweather.common.basic.GeoViewModel
 import org.breezyweather.common.basic.livedata.BusLiveData
+import org.breezyweather.common.extensions.hasNotificationPermission
 import org.breezyweather.common.extensions.hasPermission
 import org.breezyweather.common.extensions.launchIO
 import org.breezyweather.common.source.RefreshError
@@ -312,7 +313,10 @@ class MainActivityViewModel @Inject constructor(
 
         _loading.value = true
 
-        if (BuildConfig.FLAVOR != "freenet" && SettingsManager.getInstance(getApplication()).isAppUpdateCheckEnabled) {
+        if (BuildConfig.FLAVOR != "freenet" &&
+            SettingsManager.getInstance(getApplication()).isAppUpdateCheckEnabled &&
+            (getApplication() as Context).hasNotificationPermission
+        ) {
             viewModelScope.launchIO {
                 try {
                     updateChecker.checkForUpdate(getApplication(), forceCheck = false)

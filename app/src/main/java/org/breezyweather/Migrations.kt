@@ -26,6 +26,7 @@ import org.breezyweather.background.weather.WeatherUpdateJob
 import org.breezyweather.common.basic.models.options.appearance.CardDisplay
 import org.breezyweather.common.basic.models.options.appearance.DailyTrendDisplay
 import org.breezyweather.common.basic.models.options.appearance.HourlyTrendDisplay
+import org.breezyweather.main.utils.StatementManager
 import org.breezyweather.settings.SettingsManager
 import org.breezyweather.sources.SourceManager
 import java.io.File
@@ -76,6 +77,7 @@ object Migrations {
                         }
                     }
                 }
+
                 if (oldVersion < 50102) {
                     // V5.1.2 adds daily sunshine chart
                     try {
@@ -165,6 +167,14 @@ object Migrations {
                                     )
                                 }
                             }
+                    }
+
+                    try {
+                        // We cannot determine if the permission was permanently denied in the past. That is why we
+                        // need to update the state for all users updating from an older version.
+                        StatementManager(context).setPermissionDenied("android.permission.POST_NOTIFICATIONS")
+                    } catch (ignored: Throwable) {
+                        // ignored
                     }
                 }
             }

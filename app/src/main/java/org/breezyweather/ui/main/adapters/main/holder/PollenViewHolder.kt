@@ -107,8 +107,8 @@ class PollenViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
                     WeatherViewController.isDaylight(location)
                 )[0]
         )
-        mSubtitle.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorCaptionText))
-        mIndicator.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorCaptionText))
+        //mSubtitle.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorCaptionText))
+        //mIndicator.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorCaptionText))
         mPager.adapter = DailyPollenPagerAdapter(
             location,
             (activity as MainActivity).sourceManager.getPollenIndexSource(

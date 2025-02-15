@@ -117,7 +117,7 @@ class AstroViewHolder(parent: ViewGroup) : AbstractMainCardViewHolder(
             if (moonPhase.isValid) {
                 mPhaseText.visibility = View.VISIBLE
                 mPhaseView.visibility = View.VISIBLE
-                mPhaseText.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorBodyText))
+                //mPhaseText.setTextColor(MainThemeColorProvider.getColor(location, R.attr.colorBodyText))
                 mPhaseView.setColor(
                     ContextCompat.getColor(context, R.color.colorTextLight2nd),
                     ContextCompat.getColor(context, R.color.colorTextDark2nd),

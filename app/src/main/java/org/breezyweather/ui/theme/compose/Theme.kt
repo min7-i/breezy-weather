@@ -51,7 +51,7 @@ class BreezyWeatherColors {
 
         val DarkText = Color(0xff000000)
         val DarkText2nd = Color(0xff666666)
-        val GreyText = Color(0xFF878787) // TODO: check contrast
+        val GreyText = Color(0xFF828282) // TODO: check contrast
         val GreyText2nd = Color(0xffb2b2b2)
         val LightText = Color(0xffffffff)
         val LightText2nd = Color(0xff999999)

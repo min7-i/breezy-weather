@@ -53,7 +53,7 @@
 
     <color name="colorTextDark">#000000</color>
     <color name="colorTextDark2nd">#666666</color>
-    <color name="colorTextGrey">#878787</color>  <!-- TODO: check usage -->
+    <color name="colorTextGrey">#828282</color>  <!-- TODO: check usage -->
     <color name="colorTextGrey2nd">#b2b2b2</color>
     <color name="colorTextLight">#ffffff</color>
     <color name="colorTextLight2nd">#999999</color>

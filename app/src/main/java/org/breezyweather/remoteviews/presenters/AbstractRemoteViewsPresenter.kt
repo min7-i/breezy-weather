@@ -23,6 +23,7 @@ import android.app.WallpaperManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.provider.AlarmClock
 import android.provider.CalendarContract
@@ -107,10 +108,14 @@ abstract class AbstractRemoteViewsPresenter {
                     if (isLightThemed) NotificationTextColor.DARK else NotificationTextColor.LIGHT
                 }
             }
-            this.textColor = ContextCompat.getColor(
-                context,
-                if (textType == NotificationTextColor.DARK) R.color.colorTextDark else R.color.colorTextLight
-            )
+            this.textColor = if (backgroundType == WidgetBackgroundType.AUTO) {
+                Color.TRANSPARENT
+            } else {
+                ContextCompat.getColor(
+                    context,
+                    if (textType == NotificationTextColor.DARK) R.color.colorTextDark else R.color.colorTextLight
+                )
+            }
         }
 
         val minimalIconColor: NotificationTextColor
@@ -205,7 +210,9 @@ abstract class AbstractRemoteViewsPresenter {
                 WidgetColor.WidgetBackgroundType.NONE -> {
                     throw IllegalArgumentException("Trying to get widget background when background type is NONE")
                 }
-                else -> if (color.isLightThemed) R.drawable.widget_card_light else R.drawable.widget_card_dark
+                WidgetColor.WidgetBackgroundType.AUTO -> R.drawable.widget_card_follow_system
+                WidgetColor.WidgetBackgroundType.LIGHT -> R.drawable.widget_card_light
+                else -> R.drawable.widget_card_dark
             }
         }
 

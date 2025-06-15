@@ -90,7 +90,7 @@ object ClockDayVerticalWidgetIMP : AbstractRemoteViewsPresenter() {
         clockFont: String?,
         pollenIndexSource: PollenIndexSource?,
     ): RemoteViews {
-        val color = WidgetColor(context, cardStyle!!, textColor!!, location?.isDaylight ?: true)
+        val color = WidgetColor(context, cardStyle!!, textColor!!)
         val settings = SettingsManager.getInstance(context)
         val temperatureUnit = settings.temperatureUnit
         val speedUnit = settings.speedUnit
@@ -110,7 +110,7 @@ object ClockDayVerticalWidgetIMP : AbstractRemoteViewsPresenter() {
             pollenIndexSource
         )
         if (color.showCard) {
-            views.setImageViewResource(R.id.widget_clock_day_card, getCardBackgroundId(color))
+            views.setImageViewResource(R.id.widget_clock_day_card, getCardBackgroundId(color.cardColor))
             views.setInt(R.id.widget_clock_day_card, "setImageAlpha", (cardAlpha / 100.0 * 255).toInt())
         }
         location?.let { setOnClickPendingIntent(context, views, it, subtitleData) }
@@ -387,34 +387,7 @@ object ClockDayVerticalWidgetIMP : AbstractRemoteViewsPresenter() {
                     setViewVisibility(R.id.widget_clock_day_clock_lightContainer, View.GONE)
                     setViewVisibility(R.id.widget_clock_day_clock_normalContainer, View.GONE)
                     setViewVisibility(R.id.widget_clock_day_clock_blackContainer, View.GONE)
-                    setViewVisibility(
-                        R.id.widget_clock_day_clock_analogContainer_auto,
-                        if (color.backgroundType == WidgetColor.WidgetBackgroundType.AUTO) {
-                            View.VISIBLE
-                        } else {
-                            View.GONE
-                        }
-                    )
-                    setViewVisibility(
-                        R.id.widget_clock_day_clock_analogContainer_light,
-                        if (color.backgroundType == WidgetColor.WidgetBackgroundType.AUTO) {
-                            View.GONE
-                        } else if (color.textType == NotificationTextColor.DARK) {
-                            View.GONE
-                        } else {
-                            View.VISIBLE
-                        }
-                    )
-                    setViewVisibility(
-                        R.id.widget_clock_day_clock_analogContainer_dark,
-                        if (color.backgroundType == WidgetColor.WidgetBackgroundType.AUTO) {
-                            View.GONE
-                        } else if (color.textType == NotificationTextColor.DARK) {
-                            View.VISIBLE
-                        } else {
-                            View.GONE
-                        }
-                    )
+
                 }
             }
             else -> {

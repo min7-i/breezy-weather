@@ -88,8 +88,7 @@ object TextWidgetIMP : AbstractRemoteViewsPresenter() {
         val color = WidgetColor(
             context,
             "none",
-            textColor!!,
-            location.isDaylight
+            textColor!!
         )
 
         views.apply {

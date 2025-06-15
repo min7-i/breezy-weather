@@ -92,8 +92,7 @@ object DayWidgetIMP : AbstractRemoteViewsPresenter() {
             } else {
                 cardStyle!!
             },
-            textColor!!,
-            location?.isDaylight ?: true
+            textColor!!
         )
         val views = buildWidgetView(
             context,
@@ -109,7 +108,7 @@ object DayWidgetIMP : AbstractRemoteViewsPresenter() {
             pollenIndexSource
         )
         if (color.showCard) {
-            views.setImageViewResource(R.id.widget_day_card, getCardBackgroundId(color))
+            views.setImageViewResource(R.id.widget_day_card, getCardBackgroundId(color.cardColor))
             views.setInt(R.id.widget_day_card, "setImageAlpha", (cardAlpha / 100.0 * 255).toInt())
         }
         location?.let { setOnClickPendingIntent(context, views, it, viewStyle, subtitleData) }

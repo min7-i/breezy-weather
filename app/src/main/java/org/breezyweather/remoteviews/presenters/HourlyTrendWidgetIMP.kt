@@ -99,7 +99,7 @@ object HourlyTrendWidgetIMP : AbstractRemoteViewsPresenter() {
         var lowestTemperature: Float? = null
         val minimalIcon = SettingsManager.getInstance(context).isWidgetUsingMonochromeIcons
         val temperatureUnit = SettingsManager.getInstance(context).temperatureUnit
-        val lightTheme = color.isLightThemed
+        val lightTheme = true
 
         // TODO: Redundant with HourlyTemperatureAdapter
         val temperatures: Array<Float?> = arrayOfNulls(max(0, itemCount * 2 - 1))
@@ -249,8 +249,7 @@ object HourlyTrendWidgetIMP : AbstractRemoteViewsPresenter() {
         val color = WidgetColor(
             context,
             cardStyle!!,
-            "auto",
-            location?.isDaylight ?: true
+            "auto"
         )
         val drawableView = getDrawableView(context, location, color) ?: return views
         if (location == null) return views
@@ -284,7 +283,7 @@ object HourlyTrendWidgetIMP : AbstractRemoteViewsPresenter() {
         drawableView.draw(canvas)
         views.setImageViewBitmap(R.id.widget_remote_drawable, cache)
         views.setViewVisibility(R.id.widget_remote_progress, View.GONE)
-        views.setImageViewResource(R.id.widget_remote_card, getCardBackgroundId(color))
+        views.setImageViewResource(R.id.widget_remote_card, getCardBackgroundId(color.cardColor))
         views.setInt(R.id.widget_remote_card, "setImageAlpha", (cardAlpha / 100.0 * 255).toInt())
         setOnClickPendingIntent(context, views, location)
         return views

@@ -66,7 +66,7 @@ object WeekWidgetIMP : AbstractRemoteViewsPresenter() {
         textColor: String?,
         textSize: Int,
     ): RemoteViews {
-        val color = WidgetColor(context, cardStyle!!, textColor!!, location?.isDaylight ?: true)
+        val color = WidgetColor(context, cardStyle!!, textColor!!)
         val views = RemoteViews(
             context.packageName,
             if ("3_days" == viewStyle) {
@@ -192,7 +192,7 @@ object WeekWidgetIMP : AbstractRemoteViewsPresenter() {
 
         // set card visibility.
         if (color.showCard) {
-            views.setImageViewResource(R.id.widget_week_card, getCardBackgroundId(color))
+            views.setImageViewResource(R.id.widget_week_card, getCardBackgroundId(color.cardColor))
             views.setInt(R.id.widget_week_card, "setImageAlpha", (cardAlpha / 100.0 * 255).toInt())
         }
 

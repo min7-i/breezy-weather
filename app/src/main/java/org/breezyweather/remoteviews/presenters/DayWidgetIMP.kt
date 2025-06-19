@@ -20,9 +20,11 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.widget.RemoteViewsCompat.setTextViewTextColorResource
 import breezyweather.domain.location.model.Location
 import breezyweather.domain.weather.model.Weather
 import org.breezyweather.R
@@ -63,6 +65,7 @@ object DayWidgetIMP : AbstractRemoteViewsPresenter() {
             config.viewStyle, config.cardStyle, config.cardAlpha, config.textColor, config.textSize,
             config.hideSubtitle, config.subtitleData, pollenIndexSource
         )
+
         AppWidgetManager.getInstance(context).updateAppWidget(
             ComponentName(context, WidgetDayProvider::class.java),
             views
@@ -95,6 +98,7 @@ object DayWidgetIMP : AbstractRemoteViewsPresenter() {
             textColor!!,
             location?.isDaylight ?: true
         )
+
         val views = buildWidgetView(
             context,
             location,
@@ -271,6 +275,14 @@ object DayWidgetIMP : AbstractRemoteViewsPresenter() {
                 setTextColor(R.id.widget_day_subtitle, color.textColor)
                 setTextColor(R.id.widget_day_time, color.textColor)
             }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                views.apply {
+                    setTextViewTextColorResource(R.id.widget_day_title, R.color.colorTextTitle)
+                    setTextViewTextColorResource(R.id.widget_day_sign, R.color.colorTextTitle)
+                    setTextViewTextColorResource(R.id.widget_day_symbol, R.color.colorTextTitle)
+                    setTextViewTextColorResource(R.id.widget_day_subtitle, R.color.colorTextTitle)
+                    setTextViewTextColorResource(R.id.widget_day_time, R.color.colorTextTitle)
+                }
         }
         if (textSize != 100) {
             val signSymbolSize = context.resources.getDimensionPixelSize(R.dimen.widget_current_weather_icon_size)

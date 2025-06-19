@@ -279,6 +279,7 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.core.remoteviews)
     implementation(libs.core.splashscreen)
 
     implementation(libs.cardview)

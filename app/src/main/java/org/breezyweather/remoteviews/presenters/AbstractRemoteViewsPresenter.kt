@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat
 import breezyweather.domain.location.model.Location
 import breezyweather.domain.weather.model.Weather
 import org.breezyweather.R
+import org.breezyweather.common.basic.models.options.DarkMode
 import org.breezyweather.common.basic.models.options.NotificationTextColor
 import org.breezyweather.common.basic.models.options.WidgetWeekIconMode
 import org.breezyweather.common.basic.models.options.unit.SpeedUnit
@@ -77,7 +78,7 @@ abstract class AbstractRemoteViewsPresenter {
     }
 
     class WidgetColor(val context: Context, cardStyle: String, textColor: String, dayTime: Boolean) {
-        val backgroundType: WidgetBackgroundType
+        var backgroundType: WidgetBackgroundType
         val textType: NotificationTextColor
 
         val showCard: Boolean
@@ -88,7 +89,15 @@ abstract class AbstractRemoteViewsPresenter {
             private set
 
         init {
-            backgroundType = WidgetBackgroundType.find(cardStyle)
+            backgroundType = WidgetBackgroundType.find(cardStyle).run {
+                if (this == WidgetBackgroundType.AUTO) {
+                    when (SettingsManager.getInstance(context).darkMode) {
+                        DarkMode.SYSTEM -> this
+                        DarkMode.LIGHT -> WidgetBackgroundType.LIGHT
+                        DarkMode.DARK -> WidgetBackgroundType.DARK
+                    }
+                } else this
+            }
             showCard = backgroundType != WidgetBackgroundType.NONE
             isLightThemed = when (backgroundType) {
                 WidgetBackgroundType.LIGHT -> true
